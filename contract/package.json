@@ -2,5 +2,8 @@
   "name": "contract",
   "version": "1.0.0",
   "main": "index.js",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@truffle/hdwallet-provider": "^2.0.9"
+  }
 }
