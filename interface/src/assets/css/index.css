@@ -94,3 +94,7 @@ fieldset[disabled] label.form-control {
     left: 50%;
     top: 50%;
 }
+
+*.disabled {
+    cursor: not-allowed;
+}

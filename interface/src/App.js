@@ -1,5 +1,5 @@
 import './assets/css/index.css'
-import './assets/css/theme.min.css'
+// import './assets/css/theme.min.css'
 import 'react-notifications/lib/notifications.css'
 import Lawis from './pages/Lawis';
 
