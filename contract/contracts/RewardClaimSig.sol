@@ -47,10 +47,10 @@ contract RewardClaimSig {
     address public treasuryWallet;
     address public claimWallet;
 
-    uint256 transferedAmount;
-    uint256 cancelTransferNumber;
-    uint256 unClaimedBalance;
-    uint256 amountOnClaim = 500 ether;
+    uint256 public transferedAmount;
+    uint256 public cancelTransferNumber;
+    uint256 public unClaimedBalance;
+    uint256 public amountOnClaim = 500 ether;
 
     bool public outStanding;
 
@@ -184,20 +184,19 @@ contract RewardClaimSig {
 
     function updateClaimList(ClaimStruct[] memory list) external onlyOwners {
         uint256 restBalance = unClaimedBalance;
-        
         for (uint i; i < claimList.length; i ++) {
-            ClaimStruct memory claimItem = claimList[i];
-            reward[claimItem.account].able = false;
+            reward[claimList[i].account].able = false;
         }
         
+        delete claimList;
         for (uint i; i < list.length; i ++) {
             ClaimStruct memory claimItem = list[i];
+            claimList[i] = claimItem;
             reward[claimItem.account].able = true;
             reward[claimItem.account].balance += claimItem.balance;
             restBalance += claimItem.balance;
         }
 
-        claimList = list;
         unClaimedBalance = restBalance;
     }
 

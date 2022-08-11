@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@truffle/hdwallet-provider": "^2.0.9"
+    "@truffle/hdwallet-provider": "^2.0.9",
+    "truffle-plugin-verify": "^0.5.26"
   }
 }
