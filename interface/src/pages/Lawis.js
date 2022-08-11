@@ -350,23 +350,30 @@ const Lawis = () => {
 
     const getTransferHistory = async() => {
         try {
-            // await tContract.getPastEvents('Transfer', {
-            //     filter: { status: true },
-            //     fromBlock: 	21839985,
-            //     toBlock: 'latest'
-            // }).then((events) => {
-            //     setLastTransfersTreasury(events);
+            await tContract.getPastEvents('Transfer', {
+                filter: { status: true },
+                fromBlock: 	21839985,
+                toBlock: 'latest'
+            }).then((events) => {
+                setLastTransfersTreasury(events);
+            });
+
+            await cContract.getPastEvents('Transfer', {
+                filter: { status: true },
+                fromBlock: 	21839985,
+                toBlock: 'latest'
+            }).then((events) => {
+                setLastClaimTransfersList(events);
+            });
+            // await axios.get(`https://api-testnet.bscscan.com/api?module=logs&action=getLogs&fromBlock=21839985&toBlock=latest&address=${config.treasuryAddress}&topic0=0x6c201685d45b350967167ae4bbf742a99dd958968b9c36ce07db27dda4d581d0&apikey=${config.apiKey}`).then(res => {
+            //     let { result } = res.data;
+            //     result = result.filter(item => item.)
+            //     setTransferedList(res.data.result);
             // });
 
-            await axios.get(`https://api-testnet.bscscan.com/api?module=logs&action=getLogs&fromBlock=21839985&toBlock=latest&address=${config.treasuryAddress}&topic0=0x6c201685d45b350967167ae4bbf742a99dd958968b9c36ce07db27dda4d581d0&apikey=${config.apiKey}`).then(res => {
-                let { result } = res.data;
-                result = result.filter(item => item.)
-                setTransferedList(res.data.result);
-            });
-
-            await axios.get(`https://api-testnet.bscscan.com/api?module=logs&action=getLogs&fromBlock=21839985&toBlock=latest&address=${config.claimAddress}&topic0=0x6c201685d45b350967167ae4bbf742a99dd958968b9c36ce07db27dda4d581d0&apikey=${config.apiKey}`).then(res => {
-                setLastClaimTransfersList(res.data.result);
-            });
+            // await axios.get(`https://api-testnet.bscscan.com/api?module=logs&action=getLogs&fromBlock=21839985&toBlock=latest&address=${config.claimAddress}&topic0=0x6c201685d45b350967167ae4bbf742a99dd958968b9c36ce07db27dda4d581d0&apikey=${config.apiKey}`).then(res => {
+            //     setLastClaimTransfersList(res.data.result);
+            // });
 
             // await web3.eth.getTransactionReceipt('0xcf92a986183288d2010fa3519a579b8b491675bb235de3bc7d7d857966ff0caa').then(console.log);
             await axios.get(`https://api-testnet.bscscan.com/api?module=logs&action=getLogs&fromBlock=21839985&toBlock=latest&address=${config.claimAddress}&topic0=0x517536260e5362f2490ab89add881956277be30f0f7b772af65167c5c17fe606&topic0_1_opr=or&topic1=0x47cee97cb7acd717b3c0aa1435d004cd5b3c8c57d70dbceb4e4458bbd60e39d4&apikey=${config.apiKey}`).then(res => {
