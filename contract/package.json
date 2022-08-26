@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "@openzeppelin/contracts": "^4.7.3",
     "@truffle/hdwallet-provider": "^2.0.9",
     "truffle-plugin-verify": "^0.5.26"
   }
