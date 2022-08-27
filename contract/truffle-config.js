@@ -68,25 +68,33 @@
      // },
      // Useful for deploying to a public network.
      // NB: It's important to wrap the provider as a function.
-     ropsten: {
-       provider: () => new HDWalletProvider(mnemonic, 'https://ropsten.infura.io/v3/' + infura_id),
-       network_id: 3,
-       gas: 4712388,
-       //gas: 4465030,          // Original
-       //gasPrice: 5000000000,  // 5 gwei (Original)
-       //gasPrice: 10000000000, // 10 gwei
-       gasPrice: 100000000000,  // 100 gwei
-       skipDryRun: true,        // Skip dry run before migrations? (default: false for public nets)
-       networkCheckTimeout: 1000000
-     },
-     rinkeby: {
-       provider: () => new HDWalletProvider(mnemonic, "https://rinkeby.infura.io/v3/" + infura_id),
-       network_id: 4,
-       gas: 6000000,         // 2 times than before
-       gasPrice: 5000000000, // 5 gwei,
-       skipDryRun: true,     // Skip dry run before migrations? (default: false for public nets)
-       //from: process.env.DEPLOYER_ADDRESS
-     },
+    ropsten: {
+      provider: () => new HDWalletProvider(mnemonic, 'https://ropsten.infura.io/v3/' + infura_id),
+      network_id: 3,
+      gas: 4712388,
+      //gas: 4465030,          // Original
+      //gasPrice: 5000000000,  // 5 gwei (Original)
+      //gasPrice: 10000000000, // 10 gwei
+      gasPrice: 100000000000,  // 100 gwei
+      skipDryRun: true,        // Skip dry run before migrations? (default: false for public nets)
+      networkCheckTimeout: 1000000
+    },
+    rinkeby: {
+      provider: () => new HDWalletProvider(mnemonic, "https://rinkeby.infura.io/v3/" + infura_id),
+      network_id: 4,
+      gas: 6000000,         // 2 times than before
+      gasPrice: 5000000000, // 5 gwei,
+      skipDryRun: true,     // Skip dry run before migrations? (default: false for public nets)
+      //from: process.env.DEPLOYER_ADDRESS
+    },
+    goerli: {
+      provider: () => new HDWalletProvider(mnemonic, "https://goerli.infura.io/v3/" + infura_id),
+      network_id: 5,
+      gas: 6000000,         // 2 times than before
+      gasPrice: 5000000000, // 5 gwei,
+      skipDryRun: true,     // Skip dry run before migrations? (default: false for public nets)
+      //from: process.env.DEPLOYER_ADDRESS
+    },
     bsctestnet: {
       provider: () => new HDWalletProvider(mnemonic, `https://data-seed-prebsc-1-s1.binance.org:8545`),
       network_id: 97,
