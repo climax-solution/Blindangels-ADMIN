@@ -36,7 +36,7 @@ contract BlindAngelClaim {
     bool private updatedClaimList;
     uint256 public week;
 
-    WithdrawStruct private withdrawRequest;
+    WithdrawStruct public withdrawRequest;
 
     modifier onlySigners() {
         require(admins[msg.sender]);
