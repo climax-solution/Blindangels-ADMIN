@@ -1,14 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NotificationManager } from "react-notifications";
+import { useAppContext } from "../../../context";
 
-const CreateTransfer = ({ tContract, web3 }) => {
+const CreateTransfer = () => {
+
+    const { web3, tContract, isConnected, ownerAddress, setIsLoading } = useAppContext();
 
     const [transferAddress, setTransferAddress] = useState('');
     const [transferAmount, setTransferAmount] = useState('');
-    const [endTransferRequest, setEndTransferRequest] = useState('');
+    const [transferRequest, setTransferRequest] = useState('');
     const [decTransferNumber, setDecTransferNumber] = useState('');
 
-    const [isConnected, setIsConnected] = useState(false);
+    useEffect(() => {
+        async function run () {
+            if (tContract) {
+                await getLatestItem();
+            } 
+        }
+        run();
+    }, [tContract]);
 
     const createTransferRequest = async () => {
         if (!isConnected) {
@@ -26,13 +36,13 @@ const CreateTransfer = ({ tContract, web3 }) => {
             return;
         }
         
-        // setIsLoading(true);
+        setIsLoading(true);
         try{
-            await tContract.methods.newTransferRequest(transferAddress, web3.utils.toWei(transferAmount.toString(), "gwei"))
-            .send({ from: "ownerAddress" })
+            await tContract.methods.newTransferRequest(transferAddress, web3.utils.toWei(transferAmount.toString(), "ether"))
+            .send({ from: ownerAddress })
             .on('receipt', async(res) => {
                 NotificationManager.info("Added successfully!", "Info");
-                // setIsLoading(false);
+                setIsLoading(false);
                 
             });
         }
@@ -43,7 +53,7 @@ const CreateTransfer = ({ tContract, web3 }) => {
             }
         }
 
-        // setIsLoading(false);
+        setIsLoading(false);
         setTransferAddress('');
         setTransferAmount('');
         await getTransferHistory();
@@ -56,15 +66,15 @@ const CreateTransfer = ({ tContract, web3 }) => {
             return;
         }
         
-        if (!endTransferRequest) {
+        if (!transferRequest) {
             NotificationManager.warning("No request!", "Warning");
             return;
         }
 
         try {
-            // setIsLoading(true);
+            setIsLoading(true);
             await tContract.methods.approveTransferRequest()
-            .send({ from: "ownerAddress" })
+            .send({ from: ownerAddress })
             .on('receipt', async(res) => {
                 NotificationManager.success("Sent successfully!", "Success");
             });
@@ -73,7 +83,7 @@ const CreateTransfer = ({ tContract, web3 }) => {
             console.log(err);
             NotificationManager.error("Transaction is failed!", "Failed");
         }
-        // setIsLoading(false);
+        setIsLoading(false);
         // await getLatestItem();
         // await getTransferHistory();
         // await initalSetting();
@@ -85,15 +95,15 @@ const CreateTransfer = ({ tContract, web3 }) => {
             return;
         }
 
-        if (!endTransferRequest) {
+        if (!transferRequest) {
             NotificationManager.warning("No request!", "Warning");
             return;
         }
 
         try {
-            // setIsLoading(true);
+            setIsLoading(true);
             await tContract.methods.declineTransferRequest()
-            .send({ from: "ownerAddress" })
+            .send({ from: ownerAddress })
             .on('receipt', async(res) => {
                 NotificationManager.success("Sent successfully!", "Success");
             })
@@ -104,7 +114,7 @@ const CreateTransfer = ({ tContract, web3 }) => {
         } catch(err) {
             NotificationManager.error("Transaction is failed!", "Failed");
         }
-        // setIsLoading(false);
+        setIsLoading(false);
         await getTransferHistory();
         await getLatestItem();
     }
@@ -114,10 +124,10 @@ const CreateTransfer = ({ tContract, web3 }) => {
         const treasury_transfer = await tContract.methods.transferRequest().call();
         if (treasury_transfer.isActive) {
             flag = 1;
-            setEndTransferRequest({...treasury_transfer, flag: 1});
+            setTransferRequest({...treasury_transfer, flag: 1});
         }
         
-        else setEndTransferRequest(null);
+        else setTransferRequest(null);
 
         if (flag > 0) {
             await tContract.getPastEvents('Transfer', {
@@ -227,7 +237,7 @@ const CreateTransfer = ({ tContract, web3 }) => {
                                         type="text"
                                         className="form-control"
                                         id="createTransferToAddress"
-                                        value={endTransferRequest ? endTransferRequest.to : ''}
+                                        value={transferRequest ? transferRequest.to : ''}
                                         readOnly
                                     />
                                 </div>
@@ -237,7 +247,7 @@ const CreateTransfer = ({ tContract, web3 }) => {
                                         type="number"
                                         className="form-control"
                                         id="createTransferTokens"
-                                        value={ endTransferRequest ? web3.utils.fromWei(endTransferRequest.value, 'gwei') : '' }
+                                        value={ transferRequest ? web3.utils.fromWei(transferRequest.value, 'ether') : '' }
                                         readOnly
                                     />
                                 </div>
@@ -247,7 +257,7 @@ const CreateTransfer = ({ tContract, web3 }) => {
                                         type="text"
                                         className="form-control"
                                         id="createTransferTokens"
-                                        value={ endTransferRequest ? endTransferRequest.createdBy : '' }
+                                        value={ transferRequest ? transferRequest.createdBy : '' }
                                         readOnly
                                     />
                                 </div>
@@ -257,7 +267,7 @@ const CreateTransfer = ({ tContract, web3 }) => {
                                         type="number"
                                         className="form-control"
                                         id="createTransferTokens"
-                                        value={ endTransferRequest ? decTransferNumber : '' }
+                                        value={ transferRequest ? decTransferNumber : '' }
                                         readOnly
                                     />
                                 </div>
@@ -269,7 +279,7 @@ const CreateTransfer = ({ tContract, web3 }) => {
                 <div className="col-2">
                     <div className="card">
                         <div className="card-body">
-                            <button type="button" className={`btn btn-success w-100 mb-1 ${ !false && "disabled"}`} id="transferApproveButton"
+                            <button type="button" className={`btn btn-success w-100 mb-1 ${ !isConnected && "disabled"}`} id="transferApproveButton"
                                 onClick={ () =>approveTransferRequest() }>Approve</button>
                             <button type="button" className="btn btn-light w-100" id="transferDeclineButton"
                                 onClick={ () =>declineTransferRequest() }>Cancel</button>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import config from "../config.json";
+import config from "../../config.json";
 
 const ReflectionHistory = ({ tx, web3, idx }) => {
     const [logs, setLogs] = useState([]);
@@ -40,7 +40,7 @@ const ReflectionHistory = ({ tx, web3, idx }) => {
                                 <td>{idx + 1}</td>
                                 <td>{decodeAddr(item.topics[2])}</td>
                                 <td>{decodeAddr(tx.topics[1])}</td>
-                                <td className="text-right">{web3.utils.fromWei(item.data, 'gwei')}</td>
+                                <td className="text-right">{web3.utils.fromWei(item.data, 'ether')}</td>
                                 <td><span className="badge badge-secondary">Batch Claim</span></td>
                             </tr>
                         )
@@ -52,7 +52,7 @@ const ReflectionHistory = ({ tx, web3, idx }) => {
                 <td>{idx}</td>
                 <td>{decodeAddr(tx.topics[1])}</td>
                 <td>{decodeAddr(tx.topics[1])}</td>
-                <td className="text-right">{web3.utils.fromWei(tx.data, 'gwei')}</td>
+                <td className="text-right">{web3.utils.fromWei(tx.data, 'ether')}</td>
                 <td><span className="badge-primary">Claim</span></td>
             </tr>
         }

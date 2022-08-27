@@ -1,31 +1,41 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NotificationManager } from "react-notifications";
+import { useAppContext } from "../../../context";
 
-const ApproveClaimList = ({ cContract }) => {
+const ApproveClaimList = () => {
+    const { cContract, setIsLoading, ownerAddress } = useAppContext();
+
     const [requestedList, setRequestedList] = useState([]);
 
+    useEffect(() => {
+        const list = JSON.parse(window.localStorage.getItem('claim-list'));
+        if (list && list.length) {
+            setRequestedList(list);
+        }
+    }, []);
+
     const approveClaimList = async() => {
-        // setIsLoading(true);
+        setIsLoading(true);
         try {
-            await cContract.methods.approveClaimList().send({ from: "ownerAddress" });
+            await cContract.methods.approveClaimList().send({ from: ownerAddress });
             NotificationManager.success('Claimed reflections successfully!', 'Success');
         } catch(err) {
             NotificationManager.error('Claimed reflections successfully!', 'Failure');
         }
-        // setIsLoading(false);
+        setIsLoading(false);
         await getLiveRefList();
     }
 
     const clearClaim = async() => {
-        // setIsLoading(true);
+        setIsLoading(true);
         try {
-            await cContract.methods.clearClaimList().send({ from: "ownerAddress" });
+            await cContract.methods.clearClaimList().send({ from: ownerAddress });
             NotificationManager.info('Cleared reflections successfully!', 'Success');
         } catch {
             NotificationManager.error('Clearing reflections successfully!', 'Failure');
         }
 
-        // setIsLoading(false);
+        setIsLoading(false);
         await getLiveRefList();
     }
 
@@ -33,7 +43,7 @@ const ApproveClaimList = ({ cContract }) => {
         // const list = await cContract.methods.getClaimList().call({ from: ownerAddress });
         // setRequestedList(list);
     }
-    
+
     return (
         <div className="container">
             <h2 className="mt-5 mb-3">

@@ -1,14 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NotificationManager } from "react-notifications";
+import { useAppContext } from "../../../context";
 
-const Withdraw = ({ cContract, web3 }) => {
+const Withdraw = () => {
+
+    const { web3, cContract, isConnected, ownerAddress } = useAppContext();
 
     const [withdrawAddress, setWithdrawAddress] = useState('');
     const [withdrawAmount, setWithdrawAmount] = useState('');
-    const [endWithdrawRequest, setEndWithdrawRequest] = useState('');
-    const [decWithdrawNumber, setDecWithdrawNumber] = useState('');
+    const [withdrawRequest, setWithdrawRequest] = useState('');
+    // const [decWithdrawNumber, setDecWithdrawNumber] = useState('');
 
-    const [isConnected, setIsConnected] = useState(false);
+    useEffect(() => {
+        async function run () {
+            if (cContract) {
+                await getLatestItem();
+            } 
+        }
+        run();
+    }, [cContract]);
 
     const createWithdrawRequest = async () => {
         if (!isConnected) {
@@ -28,8 +38,8 @@ const Withdraw = ({ cContract, web3 }) => {
         
         // setIsLoading(true);
         try{
-            await cContract.methods.newWithdrawRequest(withdrawAddress, web3.utils.toWei(withdrawAmount.toString(), "gwei"))
-            .send({ from: "ownerAddress" })
+            await cContract.methods.newWithdrawRequest(withdrawAddress, web3.utils.toWei(withdrawAmount.toString(), "ether"))
+            .send({ from: ownerAddress })
             .on('receipt', async(res) => {
                 NotificationManager.info("Added successfully!", "Info");
                 // setIsLoading(false);
@@ -56,7 +66,7 @@ const Withdraw = ({ cContract, web3 }) => {
             return;
         }
         
-        if (!endWithdrawRequest) {
+        if (!withdrawRequest) {
             NotificationManager.warning("No request!", "Warning");
             return;
         }
@@ -64,7 +74,7 @@ const Withdraw = ({ cContract, web3 }) => {
         try {
             // setIsLoading(true);
             await cContract.methods.approveWithdrawRequest()
-            .send({ from: "ownerAddress" })
+            .send({ from: ownerAddress })
             .on('receipt', async(res) => {
                 NotificationManager.success("Sent successfully!", "Success");
             });
@@ -85,7 +95,7 @@ const Withdraw = ({ cContract, web3 }) => {
             return;
         }
 
-        if (!endWithdrawRequest) {
+        if (!withdrawRequest) {
             NotificationManager.warning("No request!", "Warning");
             return;
         }
@@ -93,7 +103,7 @@ const Withdraw = ({ cContract, web3 }) => {
         try {
             // setIsLoading(true);
             await cContract.methods.declineWithdrawRequest()
-            .send({ from: "ownerAddress" })
+            .send({ from: ownerAddress })
             .on('receipt', async(res) => {
                 NotificationManager.success("Sent successfully!", "Success");
             })
@@ -111,23 +121,23 @@ const Withdraw = ({ cContract, web3 }) => {
 
     const getLatestItem = async() => {
         let flag = 0;
-        const treasury_withdraw = await cContract.methods.withdrawRequest().call();
-        if (treasury_withdraw.isActive) {
+        const withdraw = await cContract.methods.withdrawRequest().call();
+        if (withdraw.isActive) {
             flag = 1;
-            setEndWithdrawRequest({...treasury_withdraw, flag: 1});
+            setWithdrawRequest({...withdraw, flag: 1});
         }
         
-        else setEndWithdrawRequest(null);
+        else setWithdrawRequest(null);
 
-        if (flag > 0) {
-            await cContract.getPastEvents('Withdraw', {
-                filter: { status: false },
-                fromBlock: 	21888857,
-                toBlock: 'latest'
-            }).then((events) => {
-                setDecWithdrawNumber(events.length);
-            });
-        }
+        // if (flag > 0) {
+        //     await cContract.getPastEvents('Withdraw', {
+        //         filter: { status: false },
+        //         fromBlock: 	21888857,
+        //         toBlock: 'latest'
+        //     }).then((events) => {
+        //         setDecWithdrawNumber(events.length);
+        //     });
+        // }
     }
 
     const getWithdrawHistory = async() => {
@@ -147,7 +157,7 @@ const Withdraw = ({ cContract, web3 }) => {
             // }).then((events) => {
             //     setLastClaimWithdrawsList(events);
             // });
-            // await axios.get(`https://api-testnet.bscscan.com/api?module=logs&action=getLogs&fromBlock=21888857&toBlock=latest&address=${config.treasuryAddress}&topic0=0x6c201685d45b350967167ae4bbf742a99dd958968b9c36ce07db27dda4d581d0&apikey=${config.apiKey}`).then(res => {
+            // await axios.get(`https://api-testnet.bscscan.com/api?module=logs&action=getLogs&fromBlock=21888857&toBlock=latest&address=${config.ddress}&topic0=0x6c201685d45b350967167ae4bbf742a99dd958968b9c36ce07db27dda4d581d0&apikey=${config.apiKey}`).then(res => {
             //     let { result } = res.data;
             //     result = result.filter(item => item.)
             //     setWithdrawedList(res.data.result);
@@ -227,7 +237,7 @@ const Withdraw = ({ cContract, web3 }) => {
                                         type="text"
                                         className="form-control"
                                         id="createWithdrawToAddress"
-                                        value={endWithdrawRequest ? endWithdrawRequest.to : ''}
+                                        value={withdrawRequest ? withdrawRequest.to : ''}
                                         readOnly
                                     />
                                 </div>
@@ -237,7 +247,7 @@ const Withdraw = ({ cContract, web3 }) => {
                                         type="number"
                                         className="form-control"
                                         id="createWithdrawTokens"
-                                        value={ endWithdrawRequest ? web3.utils.fromWei(endWithdrawRequest.value, 'gwei') : '' }
+                                        value={ withdrawRequest ? web3.utils.fromWei(withdrawRequest.amount, 'ether') : '' }
                                         readOnly
                                     />
                                 </div>
@@ -247,17 +257,7 @@ const Withdraw = ({ cContract, web3 }) => {
                                         type="text"
                                         className="form-control"
                                         id="createWithdrawTokens"
-                                        value={ endWithdrawRequest ? endWithdrawRequest.createdBy : '' }
-                                        readOnly
-                                    />
-                                </div>
-                                <label htmlFor="createWithdrawTokens">Number of Cancellations</label>
-                                <div className="input-group mb-3">
-                                    <input
-                                        type="number"
-                                        className="form-control"
-                                        id="createWithdrawTokens"
-                                        value={ endWithdrawRequest ? decWithdrawNumber : '' }
+                                        value={ withdrawRequest ? withdrawRequest.creator : '' }
                                         readOnly
                                     />
                                 </div>

@@ -4,58 +4,35 @@ import treasuryAbi from "../contracts/treasury_abi.json";
 import claimAbi from "../contracts/claim_abi.json";
 import {getWeb3} from "../utility/getWeb3.js"
 import Loading from "./Loading.js";
-import config from "./config.json";
-import CreateTransfer from './components/Transfer/createTransfer';
+import config from "../config.json";
+import CreateTransfer from './components/Transfer/transfer';
 import Withdraw from './components/Withdraw/withdraw';
 import TransferHistory from './components/Transfer/transferHistory';
 import UploadClaim from './components/Claim/uploadClaim';
 import ApproveClaimList from './components/Claim/approveClaim';
 import ClaimHistory from './components/Claim/claimHistory';
+import { useAppContext } from '../context';
 
 const Lawis = () => {
     
     const { treasuryAddress, claimAddress } = config;
+    const { web3, tContract, cContract, ownerAddress, setOwnerAddress, isLoading, isConnected, setIsConnected } = useAppContext();
 
-    const [web3, setWEB3] = useState({});
-    const [ownerAddress, setOwnerAddress] = useState('Loading...');
     const [treasuryBalance, setTreasuryBalance] = useState('Loading...');
     const [claimWalletBalance,  setClaimWalletBalance ] = useState('Loading...');
-    const [isLoading, setIsLoading] = useState(false);
-
     const [unClaimedBalance] = useState('Loading...');
-    const [isConnected, setIsConnected] = useState(false);
-
-    const [tContract, setTreasuryContract] = useState({})
-    const [cContract, setClaimContract] = useState({});
-
-    useEffect(async() => {
-        const _web3 = getWeb3();
-        if (_web3) {
-            const _Treasury = new _web3.eth.Contract(treasuryAbi, treasuryAddress);
-            const _Claim = new _web3.eth.Contract(claimAbi, claimAddress);
-
-            setClaimContract(_Claim);
-            setTreasuryContract(_Treasury);
-            setWEB3(_web3);
-        }
-    }, [])
 
     useEffect(async() => {
         if (web3) await initalSetting();
-        if (web3 && isConnected && ownerAddress != 'Loading...') {
-            console.log('changed', web3);
-            // await getLiveRefList();
-        }
 
-    }, [web3, isConnected, ownerAddress]);
+    }, [web3]);
 
     const initalSetting = async () => {
-        console.log(web3);
-        // const TBalance = await web3.eth.getBalance(treasuryAddress);
-        // const CBalance = await web3.eth.getBalance(claimAddress);
+        const TBalance = await web3.eth.getBalance(treasuryAddress);
+        const CBalance = await web3.eth.getBalance(claimAddress);
 
-        // setTreasuryBalance(web3.utils.fromWei(TBalance, 'gwei'));
-        // setClaimWalletBalance(web3.utils.fromWei(CBalance, 'ether'));
+        setTreasuryBalance(web3.utils.fromWei(TBalance, 'ether'));
+        setClaimWalletBalance(web3.utils.fromWei(CBalance, 'ether'));
     }
 
     const walletConnect = async() => {
@@ -73,9 +50,6 @@ const Lawis = () => {
         }
     }
     
-
-    
-
     return (
         <>
             <NotificationContainer/>

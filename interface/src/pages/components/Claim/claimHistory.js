@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useAppContext } from "../../../context";
 import ReflectionHistory from "../refHistory";
 
-const ClaimHistory = ({ web3 }) => {
+const ClaimHistory = () => {
+    const { web3 } = useAppContext();
     const [transferedList, setTransferedList] = useState([]);
 
     return (

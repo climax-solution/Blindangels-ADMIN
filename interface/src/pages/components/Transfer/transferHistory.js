@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { useAppContext } from "../../../context";
 
-const TransferHistory = ({ web3 }) => {
+const TransferHistory = () => {
+
+    const { web3 } = useAppContext();
 
     const [lastTransfersTreasury, setLastTransfersTreasury] = useState([]);
 
@@ -29,7 +32,7 @@ const TransferHistory = ({ web3 }) => {
                                         <td>{item.createdBy}</td>
                                         <td>{item.to}</td>
                                         <td>{item.dealedBy}</td>
-                                        <td>{web3.utils.fromWei(item.value, "gwei")}</td>
+                                        <td>{web3.utils.fromWei(item.value, "ether")}</td>
                                     </tr>
                                 )
                             })

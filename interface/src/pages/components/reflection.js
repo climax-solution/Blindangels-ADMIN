@@ -11,7 +11,7 @@ const Reflection = ({ idx, address, contract, web3 }) => {
         <tr>
             <td>{idx}</td>
             <td>{address}</td>
-            <td>{web3.utils.fromWei(balance, 'gwei')}</td>
+            <td>{web3.utils.fromWei(balance, 'ether')}</td>
         </tr>
     )
 }

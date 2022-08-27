@@ -1,11 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
+import { AppWrapper } from './context';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.Fragment>
-    <App />
+    <AppWrapper>
+      <App />
+    </AppWrapper>
   </React.Fragment>,
   document.getElementById('root')
 );

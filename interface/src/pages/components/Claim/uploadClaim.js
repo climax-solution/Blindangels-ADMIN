@@ -4,8 +4,11 @@ import { utils } from "ethers";
 import keccak256 from "keccak256";
 import Papa from "papaparse"
 import { NotificationManager } from "react-notifications";
+import { useAppContext } from "../../../context";
 
-const UploadClaim = ({ cContract, web3, isConnected }) => {
+const UploadClaim = () => {
+
+    const { web3, cContract, isConnected, ownerAddress, setIsLoading } = useAppContext();
 
     const [reflectionList, setReflectionList] = useState([]);
     const [week, setWeek] = useState(1);
@@ -42,13 +45,13 @@ const UploadClaim = ({ cContract, web3, isConnected }) => {
         }
 
         let chunkList = [];
-        // setIsLoading(true);
+        setIsLoading(true);
         try {
             for (let i = 0; i < reflectionList.length; i ++) {
                 if(chunkList.filter((c) => c[0] === reflectionList[i].account ).length > 0) continue;
                 chunkList.push([
                     reflectionList[i].account,
-                    web3.utils.toWei(reflectionList[i].balance, 'gwei')
+                    web3.utils.toWei(reflectionList[i].balance, 'ether')
                 ])
             }
 
@@ -58,9 +61,11 @@ const UploadClaim = ({ cContract, web3, isConnected }) => {
             const proof = merkleTree.getHexProof(elements[2]);
             console.log(proof);
             await cContract.methods.updateClaimList(root)
-            .send({ from : "ownerAddress" })
+            .send({ from : ownerAddress })
             .on('receipt', (res) => {
                 NotificationManager.success("Upload successfully!", "Success");
+                const list = JSON.stringify(reflectionList);
+                window.localStorage.setItem('clail-list', list);
             })
             .catch(err => console.log)
         } catch(err) {
@@ -71,7 +76,7 @@ const UploadClaim = ({ cContract, web3, isConnected }) => {
         }
         // setRequestedList(reflectionList);
         setReflectionList([]);
-        // setIsLoading(false);
+        setIsLoading(false);
     }
 
     return (
