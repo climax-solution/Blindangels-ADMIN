@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { NotificationManager } from "react-notifications";
 import { useAppContext } from "../../../context";
+import SectionTitle from "../sectionTitle";
 
 const Withdraw = () => {
 
-    const { web3, cContract, isConnected, ownerAddress } = useAppContext();
+    const { web3, cContract, isConnected, ownerAddress, setIsLoading } = useAppContext();
 
     const [withdrawAddress, setWithdrawAddress] = useState('');
     const [withdrawAmount, setWithdrawAmount] = useState('');
@@ -36,13 +37,13 @@ const Withdraw = () => {
             return;
         }
         
-        // setIsLoading(true);
+        setIsLoading(true);
         try{
             await cContract.methods.newWithdrawRequest(withdrawAddress, web3.utils.toWei(withdrawAmount.toString(), "ether"))
             .send({ from: ownerAddress })
             .on('receipt', async(res) => {
-                NotificationManager.info("Added successfully!", "Info");
-                // setIsLoading(false);
+                NotificationManager.info("Requested successfully!", "Info");
+                setIsLoading(false);
                 
             });
         }
@@ -53,7 +54,7 @@ const Withdraw = () => {
             }
         }
 
-        // setIsLoading(false);
+        setIsLoading(false);
         setWithdrawAddress('');
         setWithdrawAmount('');
         await getWithdrawHistory();
@@ -72,18 +73,18 @@ const Withdraw = () => {
         }
 
         try {
-            // setIsLoading(true);
+            setIsLoading(true);
             await cContract.methods.approveWithdrawRequest()
             .send({ from: ownerAddress })
             .on('receipt', async(res) => {
-                NotificationManager.success("Sent successfully!", "Success");
+                NotificationManager.success("Withdraw successfully!", "Success");
             });
             
         } catch(err) {
             console.log(err);
             NotificationManager.error("Transaction is failed!", "Failed");
         }
-        // setIsLoading(false);
+        setIsLoading(false);
         // await getLatestItem();
         // await getWithdrawHistory();
         // await initalSetting();
@@ -101,11 +102,11 @@ const Withdraw = () => {
         }
 
         try {
-            // setIsLoading(true);
+            setIsLoading(true);
             await cContract.methods.declineWithdrawRequest()
             .send({ from: ownerAddress })
             .on('receipt', async(res) => {
-                NotificationManager.success("Sent successfully!", "Success");
+                NotificationManager.success("Withdraw successfully!", "Success");
             })
             .catch(err => {
                 console.log(err);
@@ -114,7 +115,7 @@ const Withdraw = () => {
         } catch(err) {
             NotificationManager.error("Transaction is failed!", "Failed");
         }
-        // setIsLoading(false);
+        setIsLoading(false);
         await getWithdrawHistory();
         await getLatestItem();
     }
@@ -180,10 +181,7 @@ const Withdraw = () => {
 
     return (
         <div className="container" id="withdraw">
-
-            <div className="row">
-                <h2 className="mt-5 mb-3 col-7"><strong>Withdraw</strong></h2>
-            </div>
+            <SectionTitle title="Withdraw"/>
             <div className="row justify-content-center">
                 <div className="col-5">
                     <div className="card">

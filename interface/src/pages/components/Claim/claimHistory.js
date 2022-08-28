@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAppContext } from "../../../context";
 import ReflectionHistory from "../refHistory";
+import SectionTitle from "../sectionTitle";
 
 const ClaimHistory = () => {
     const { web3 } = useAppContext();
@@ -8,9 +9,7 @@ const ClaimHistory = () => {
 
     return (
         <div className="container mb-5 mt-10">
-            <h2 className="mt-5 mb-3">
-                <strong>View Last Reflections Claimed</strong>
-            </h2>
+            <SectionTitle title="View Last Reflections Claimed"/>
             <div className="table-panel w-100 overflow-auto" style={{ overflow: 'auto'}}>
                 <table id="upload-table" className="table">
                     <thead className='thead-dark'>

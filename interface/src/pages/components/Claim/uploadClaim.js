@@ -5,13 +5,14 @@ import keccak256 from "keccak256";
 import Papa from "papaparse"
 import { NotificationManager } from "react-notifications";
 import { useAppContext } from "../../../context";
+import SectionTitle from "../sectionTitle";
 
 const UploadClaim = () => {
 
     const { web3, cContract, isConnected, ownerAddress, setIsLoading } = useAppContext();
 
     const [reflectionList, setReflectionList] = useState([]);
-    const [week, setWeek] = useState(1);
+    const [week, setWeek] = useState('');
 
     const importReflectionList = (e) => {
         if (!isConnected) {
@@ -46,6 +47,7 @@ const UploadClaim = () => {
 
         let chunkList = [];
         setIsLoading(true);
+        console.log(web3.utils.toWei("0.005", 'ether'))
         try {
             for (let i = 0; i < reflectionList.length; i ++) {
                 if(chunkList.filter((c) => c[0] === reflectionList[i].account ).length > 0) continue;
@@ -65,7 +67,7 @@ const UploadClaim = () => {
             .on('receipt', (res) => {
                 NotificationManager.success("Upload successfully!", "Success");
                 const list = JSON.stringify(reflectionList);
-                window.localStorage.setItem('clail-list', list);
+                window.localStorage.setItem('claim-list', list);
             })
             .catch(err => console.log)
         } catch(err) {
@@ -81,9 +83,7 @@ const UploadClaim = () => {
 
     return (
         <div className="container">
-            <h2 className="mt-5 mb-3">
-                <strong>Upload Reflections Claim List</strong>
-            </h2>
+            <SectionTitle title="Upload Reflections Claim List"/>
             <div className='row'>
                 <div className="controls-section col">
                     <div className="upload-file-button">

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { NotificationManager } from "react-notifications";
 import { useAppContext } from "../../../context";
+import SectionTitle from "../sectionTitle";
 
 const CreateTransfer = () => {
 
@@ -181,9 +182,7 @@ const CreateTransfer = () => {
     return (
         <div className="container" id="transfer">
 
-            <div className="row">
-                <h2 className="mt-5 mb-3 col-7"><strong>Transfer</strong></h2>
-            </div>
+            <SectionTitle title="Transfer"/>
             <div className="row justify-content-center">
                 <div className="col-5">
                     <div className="card">

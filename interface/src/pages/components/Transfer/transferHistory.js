@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAppContext } from "../../../context";
+import SectionTitle from "../sectionTitle";
 
 const TransferHistory = () => {
 
@@ -9,9 +10,7 @@ const TransferHistory = () => {
 
     return (
         <div className="container mb-5 mt-10" id="treasury-last-transfer">
-            <h2 className="mt-5 mb-3">
-                <strong>View Treasury Wallet Last Transfers</strong>
-            </h2>
+            <SectionTitle title="View Treasury Wallet Last Transfers"/>
             <div className='overflow-auto'>
                 <table id="upload-table" className="table">
                     <thead className='thead-dark'>

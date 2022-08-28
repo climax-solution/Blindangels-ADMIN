@@ -12,6 +12,8 @@ import UploadClaim from './components/Claim/uploadClaim';
 import ApproveClaimList from './components/Claim/approveClaim';
 import ClaimHistory from './components/Claim/claimHistory';
 import { useAppContext } from '../context';
+import Week from './components/Week/week';
+import Freeze from './components/Freeze/freez';
 
 const Lawis = () => {
     
@@ -192,6 +194,9 @@ const Lawis = () => {
 
                 <ClaimHistory/>
 
+                <Week/>
+
+                <Freeze/>
             </div>
         </>
     )

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { NotificationManager } from "react-notifications";
 import { useAppContext } from "../../../context";
+import SectionTitle from "../sectionTitle";
 
 const ApproveClaimList = () => {
     const { cContract, setIsLoading, ownerAddress } = useAppContext();
@@ -18,15 +19,17 @@ const ApproveClaimList = () => {
         setIsLoading(true);
         try {
             await cContract.methods.approveClaimList().send({ from: ownerAddress });
-            NotificationManager.success('Claimed reflections successfully!', 'Success');
+            NotificationManager.success('Approve successfully!', 'Success');
         } catch(err) {
-            NotificationManager.error('Claimed reflections successfully!', 'Failure');
+            NotificationManager.error('Approve failure!', 'Failure');
         }
+        window.localStorage.removeItem('claim-list');
         setIsLoading(false);
         await getLiveRefList();
     }
 
     const clearClaim = async() => {
+        window.localStorage.removeItem('claim-list');
         setIsLoading(true);
         try {
             await cContract.methods.clearClaimList().send({ from: ownerAddress });
@@ -46,9 +49,7 @@ const ApproveClaimList = () => {
 
     return (
         <div className="container">
-            <h2 className="mt-5 mb-3">
-                <strong>Approve Reflections Claim List</strong>
-            </h2>
+            <SectionTitle title="Approve Reflections Claim List"/>
             <div className="my-5" style={{ maxHeight: "500px", overflow: "auto"}}>
                 <table className="table upload-data">
                     <thead className='thead-dark'>
