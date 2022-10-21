@@ -106,7 +106,7 @@ const Withdraw = () => {
             await cContract.methods.declineWithdrawRequest()
             .send({ from: ownerAddress })
             .on('receipt', async(res) => {
-                NotificationManager.success("Withdraw successfully!", "Success");
+                NotificationManager.success("Declined withdraw successfully!", "Success");
             })
             .catch(err => {
                 console.log(err);
