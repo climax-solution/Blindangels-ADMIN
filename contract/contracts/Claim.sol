@@ -146,7 +146,7 @@ contract BlindAngelClaim {
     }
 
     function declineWithdrawRequest() external onlySigners {
-        require(!withdrawRequest.isActive, "withdraw is not requested");
+        require(withdrawRequest.isActive, "withdraw is not requested");
 
         withdrawRequest.isActive = false;
     }
