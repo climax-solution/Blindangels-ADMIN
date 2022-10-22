@@ -19,7 +19,7 @@ const Withdraw = () => {
             } 
         }
         run();
-    }, [cContract]);
+    }, [cContract]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const createWithdrawRequest = async () => {
         if (!isConnected) {
@@ -121,11 +121,11 @@ const Withdraw = () => {
     }
 
     const getLatestItem = async() => {
-        let flag = 0;
+        // let flag = 0;
         const withdraw = await cContract.methods.withdrawRequest().call();
         if (withdraw.isActive) {
-            flag = 1;
-            setWithdrawRequest({...withdraw, flag: 1});
+            // flag = 1;
+            setWithdrawRequest({...withdraw });
         }
         
         else setWithdrawRequest(null);

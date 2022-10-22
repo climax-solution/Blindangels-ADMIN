@@ -6,7 +6,7 @@ const TransferHistory = () => {
 
     const { web3 } = useAppContext();
 
-    const [lastTransfersTreasury, setLastTransfersTreasury] = useState([]);
+    const [lastTransfersTreasury, /*setLastTransfersTreasury*/] = useState([]);
 
     return (
         <div className="container mb-5 mt-10" id="treasury-last-transfer">

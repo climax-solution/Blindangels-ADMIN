@@ -9,7 +9,7 @@ const Week = () => {
 
     useEffect(() => {
         if (cContract) getWeek();
-    }, [cContract]);
+    }, [cContract]); // eslint-disable-line react-hooks/exhaustive-deps
 
     async function getWeek() {
         const _week = await cContract.methods.week().call();

@@ -19,7 +19,7 @@ const CreateTransfer = () => {
             } 
         }
         run();
-    }, [tContract]);
+    }, [tContract]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const createTransferRequest = async () => {
         if (!isConnected) {

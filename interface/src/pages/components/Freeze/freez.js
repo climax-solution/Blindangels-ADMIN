@@ -9,7 +9,7 @@ const Freeze = () => {
 
     useEffect(() => {
         if (cContract) getFrozen();
-    }, [cContract]);
+    }, [cContract]); // eslint-disable-line react-hooks/exhaustive-deps
 
     async function getFrozen() {
         const _frozen = await cContract.methods.frozen().call();

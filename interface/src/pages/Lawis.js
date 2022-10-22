@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { NotificationContainer, NotificationManager } from 'react-notifications'
-import treasuryAbi from "../contracts/treasury_abi.json";
-import claimAbi from "../contracts/claim_abi.json";
-import {getWeb3} from "../utility/getWeb3.js"
 import Loading from "./Loading.js";
 import config from "../config.json";
 import CreateTransfer from './components/Transfer/transfer';
@@ -15,27 +12,25 @@ import { useAppContext } from '../context';
 import Week from './components/Week/week';
 import Freeze from './components/Freeze/freez';
 
+const { treasuryAddress, claimAddress } = config;
 const Lawis = () => {
     
-    const { treasuryAddress, claimAddress } = config;
     const { web3, tContract, cContract, ownerAddress, setOwnerAddress, isLoading, isConnected, setIsConnected } = useAppContext();
 
     const [treasuryBalance, setTreasuryBalance] = useState('Loading...');
     const [claimWalletBalance,  setClaimWalletBalance ] = useState('Loading...');
     const [unClaimedBalance] = useState('Loading...');
 
-    useEffect(async() => {
-        if (web3) await initalSetting();
-
+    useEffect(() => {
+        async function initalSetting() {
+            const TBalance = await web3.eth.getBalance(treasuryAddress);
+            const CBalance = await web3.eth.getBalance(claimAddress);
+    
+            setTreasuryBalance(web3.utils.fromWei(TBalance, 'ether'));
+            setClaimWalletBalance(web3.utils.fromWei(CBalance, 'ether'));
+        }
+        if (web3) initalSetting();
     }, [web3]);
-
-    const initalSetting = async () => {
-        const TBalance = await web3.eth.getBalance(treasuryAddress);
-        const CBalance = await web3.eth.getBalance(claimAddress);
-
-        setTreasuryBalance(web3.utils.fromWei(TBalance, 'ether'));
-        setClaimWalletBalance(web3.utils.fromWei(CBalance, 'ether'));
-    }
 
     const walletConnect = async() => {
         if (web3) {

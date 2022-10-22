@@ -5,8 +5,9 @@ import claimAbi from "./contracts/claim_abi.json";
 import config from "./config.json";
 
 const AppContext = createContext({});
+const { treasuryAddress, claimAddress } = config;
+
 export const AppWrapper = ({ children }) => {
-    const { treasuryAddress, claimAddress } = config;
 
     const [web3, setWEB3] = useState(null);
     const [tContract, setTreasuryContract] = useState(null)
@@ -15,7 +16,7 @@ export const AppWrapper = ({ children }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [isConnected, setIsConnected] = useState(false);
 
-    useEffect(async() => {
+    useEffect(() => {
         const _web3 = getWeb3();
         if (_web3) {
             const _Treasury = new _web3.eth.Contract(treasuryAbi, treasuryAddress);

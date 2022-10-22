@@ -3,26 +3,28 @@ import config from "../../config.json";
 
 const ReflectionHistory = ({ tx, web3, idx }) => {
     const [logs, setLogs] = useState([]);
-    useEffect(async() => {
-        console.log(tx, tx.data == '0x');
-        if (tx.data == '0x') {
-            await web3.eth.getTransactionReceipt(tx.transactionHash).then((res) => {
-                const logs = res.logs.filter(item => (item.address).toLowerCase() != (config.claimAddress).toLowerCase());
-                setLogs(logs);
-            });
+    useEffect(() => {
+        async function run() {
+            if (tx.data === '0x') {
+                await web3.eth.getTransactionReceipt(tx.transactionHash).then((res) => {
+                    const logs = res.logs.filter(item => (item.address).toLowerCase() !== (config.claimAddress).toLowerCase());
+                    setLogs(logs);
+                });
+            }
+    
+            else {
+                const result = web3.eth.abi.decodeParameters([{
+                    type: 'address',
+                    name: 'to'
+                }, {
+                    type: "uint256",
+                    name: "amount"
+                }], tx.data);
+                console.log(result);
+            }
         }
-
-        else {
-            const result = web3.eth.abi.decodeParameters([{
-                type: 'address',
-                name: 'to'
-            }, {
-                type: "uint256",
-                name: "amount"
-            }], tx.data);
-            console.log(result);
-        }
-    }, [tx]);
+        run();
+    }, [tx]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const decodeAddr = (str) => {
         return web3.eth.abi.decodeParameter('address', str);
@@ -31,7 +33,7 @@ const ReflectionHistory = ({ tx, web3, idx }) => {
     return (
         <>
         {
-            tx.data == '0x' ?
+            tx.data === '0x' ?
             <>
                 {
                     logs.map((item, idx) => {

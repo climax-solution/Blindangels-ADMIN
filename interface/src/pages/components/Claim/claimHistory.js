@@ -5,7 +5,7 @@ import SectionTitle from "../sectionTitle";
 
 const ClaimHistory = () => {
     const { web3 } = useAppContext();
-    const [transferedList, setTransferedList] = useState([]);
+    const [transferedList, /*setTransferedList*/] = useState([]);
 
     return (
         <div className="container mb-5 mt-10">
