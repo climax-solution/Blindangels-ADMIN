@@ -11,6 +11,7 @@ import ClaimHistory from './components/Claim/claimHistory';
 import { useAppContext } from '../context';
 import Week from './components/Week/week';
 import Freeze from './components/Freeze/freez';
+import { Nav, Tab } from 'react-bootstrap';
 
 const { treasuryAddress, claimAddress } = config;
 const Lawis = () => {
@@ -163,36 +164,57 @@ const Lawis = () => {
                 </div>
             </div>
 
-            <CreateTransfer
-                tContract={tContract}
-                web3={web3}
-            />
+            <Tab.Container id="left-tabs-example" defaultActiveKey="inbound">
+                <div className='container'>
+                    <Nav variant="pills" className='border p-3'>
+                        <Nav.Item>
+                            <Nav.Link eventKey="inbound">Inbound</Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item>
+                            <Nav.Link eventKey="outbound">Outbound</Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item>
+                            <Nav.Link eventKey="third">Claim</Nav.Link>
+                        </Nav.Item>
+                    </Nav>
+                </div>
+                <Tab.Content>
+                    <Tab.Pane eventKey="inbound">
+                        <CreateTransfer
+                            tContract={tContract}
+                            web3={web3}
+                        />
 
-            <Withdraw
-                cContract={cContract}
-                web3={web3}
-            />
+                        <Withdraw
+                            cContract={cContract}
+                            web3={web3}
+                        />
 
-            <TransferHistory
-                web3={web3}
-            />
-
-            <div className="table-upload-wrapper mt-5">
+                        <TransferHistory
+                            web3={web3}
+                        />
+                    </Tab.Pane>
+                    <Tab.Pane eventKey="outbound">
+                        <div className="table-upload-wrapper mt-5">
                 
-                <UploadClaim
-                    web3={web3}
-                />
+                            <UploadClaim
+                                web3={web3}
+                            />
 
-                <ApproveClaimList
-                    cContract={cContract}
-                />
+                            <ApproveClaimList
+                                cContract={cContract}
+                            />
 
-                <ClaimHistory/>
+                            <ClaimHistory/>
 
-                <Week/>
+                            <Week/>
 
-                <Freeze/>
-            </div>
+                            <Freeze/>
+                        </div>
+                    </Tab.Pane>
+                </Tab.Content>
+            </Tab.Container>
+
         </>
     )
 }
