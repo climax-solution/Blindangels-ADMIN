@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 pragma solidity ^0.8.0;
 
@@ -7,7 +8,7 @@ interface IERC721 {
     function balanceOf(address owner) external view returns (uint256 balance);
 }
 
-contract BlindAngelClaim {
+contract BlindAngelClaim is Ownable {
 
     bytes32 public claimMerkleRoot;
     IERC721 public nft;
@@ -19,15 +20,29 @@ contract BlindAngelClaim {
         bool isActive;
     }
 
+    struct SignerRequest {
+        address createdBy;
+        address signer;
+        bool status;
+        bool isActive;
+    }
+
+    struct AdminExist {
+        uint256 index;
+        bool status;
+    }
+
     event Claimed(address indexed from, uint256 indexed amount, uint256 week);
     event UpdatedClaimList(address indexed updator, bytes32 root_);
     event ApprovedClaimList(address indexed dealer);
     event DeclinedClaimList(address indexed dealer);
-    event Deposited(address indexed dealer, uint256 amount);
-
+    event Deposit(address indexed dealer, uint256 amount);
+    event AddSigner(address indexed dealer, address indexed creator, address signer);
+    event RemoveSigner(address indexed dealer, address indexed creator, address signer);
     event Withdraw(address indexed dealer, address indexed creator, address to, uint256 amount);
 
-    mapping(address => bool) public admins;
+    address[] public admins;
+    mapping(address => AdminExist) public adminsExist;
     mapping(address => mapping(uint256 => bool)) public claimed;
 
     address private last_creator;
@@ -37,9 +52,10 @@ contract BlindAngelClaim {
     uint256 public week;
 
     WithdrawStruct public withdrawRequest;
+    SignerRequest public signerRequest;
 
     modifier onlySigners() {
-        require(admins[msg.sender]);
+        require(adminsExist[msg.sender].status, "not signer");
         _;
     }
 
@@ -52,8 +68,11 @@ contract BlindAngelClaim {
         address[] memory _owners,
         address _nft
     ) {
-        require(_owners.length == 3, "Owners are not 3 addresses" );
-        for (uint i = 0; i < _owners.length; i ++) admins[_owners[i]] = true;
+        require(_owners.length > 1, "Signer is 2 at least." );
+        for (uint256 i = 0; i < _owners.length; i ++) {
+            admins.push(_owners[i]);
+            adminsExist[_owners[i]] = AdminExist(i, true);
+        }
         nft = IERC721(_nft);
     }
 
@@ -117,7 +136,7 @@ contract BlindAngelClaim {
 
     function deposit(uint256 amount) external payable {
         require(msg.value >= amount);
-        emit Deposited(msg.sender, amount);
+        emit Deposit(msg.sender, amount);
     }
 
     function newWithdrawRequest(address to, uint256 amount) external onlySigners {
@@ -130,7 +149,6 @@ contract BlindAngelClaim {
             amount: amount,
             isActive: true
         });
-
     }
 
     function approveWithdrawRequest() external onlySigners {
@@ -158,5 +176,49 @@ contract BlindAngelClaim {
     function decreaseWeek() external onlySigners {
         require(week > 0 ,"can't decrease");
         week --;
+    }
+
+     function newSignerRequest(address signer, bool status) public onlySigners {
+        require(signer != msg.sender, "can't request self address");
+        require(signer != address(0), "invalid address");
+
+        if (adminsExist[signer].status == status) {
+            if (status) revert("signer is already existed");
+            else revert("signer is not existed");
+        }
+
+        signerRequest = SignerRequest({
+            createdBy: msg.sender,
+            signer: signer,
+            isActive: true,
+            status: status
+        });
+        
+    }
+    
+    function declineSignerRequest() public onlySigners {
+        require(signerRequest.isActive);
+        
+        signerRequest.isActive = false;
+    }
+
+    function approveSignerRequest() public onlySigners {
+        require(signerRequest.isActive);
+        require(signerRequest.createdBy != msg.sender, "can't approve transaction you created");
+        
+        address signer = signerRequest.signer;
+        if (signerRequest.status) {
+            admins.push(signer);
+            adminsExist[signer] = AdminExist(admins.length - 1, true);
+            emit AddSigner(msg.sender, signerRequest.createdBy, signer);
+        } else {
+            uint256 index = adminsExist[signer].index;
+            if (index != admins.length - 1) {
+                admins[index] = admins[admins.length -1];
+                adminsExist[admins[index]].index = index;
+            }
+            emit RemoveSigner(msg.sender, signerRequest.createdBy, signer);
+            delete adminsExist[signer];
+        }
     }
 }
