@@ -5,12 +5,13 @@ import claimAbi from "./contracts/claim_abi.json";
 import config from "./config.json";
 
 const AppContext = createContext({});
-const { treasuryAddress, claimAddress } = config;
+const { inboundTreasuryAddress, outboundTreasuryAddress, claimAddress } = config;
 
 export const AppWrapper = ({ children }) => {
 
     const [web3, setWEB3] = useState(null);
-    const [tContract, setTreasuryContract] = useState(null)
+    const [tInContract, setInTreasuryContract] = useState(null)
+    const [tOutContract, setOutTreasuryContract] = useState(null)
     const [cContract, setClaimContract] = useState(null);
     const [ownerAddress, setOwnerAddress] = useState('Loading...');
     const [isLoading, setIsLoading] = useState(false);
@@ -19,17 +20,19 @@ export const AppWrapper = ({ children }) => {
     useEffect(() => {
         const _web3 = getWeb3();
         if (_web3) {
-            const _Treasury = new _web3.eth.Contract(treasuryAbi, treasuryAddress);
+            const _inTreasury = new _web3.eth.Contract(treasuryAbi, inboundTreasuryAddress);
+            const _outTreasury = new _web3.eth.Contract(treasuryAbi, outboundTreasuryAddress);
             const _Claim = new _web3.eth.Contract(claimAbi, claimAddress);
 
             setClaimContract(_Claim);
-            setTreasuryContract(_Treasury);
+            setInTreasuryContract(_inTreasury);
+            setOutTreasuryContract(_outTreasury);
             setWEB3(_web3);
         }
     }, [])
 
     const context = {
-        web3, tContract, cContract, ownerAddress, setOwnerAddress, isLoading, setIsLoading, isConnected, setIsConnected
+        web3, tInContract, tOutContract, cContract, ownerAddress, setOwnerAddress, isLoading, setIsLoading, isConnected, setIsConnected
     };
 
     return(

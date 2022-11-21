@@ -3,9 +3,9 @@ import { NotificationManager } from "react-notifications";
 import { useAppContext } from "../../../context";
 import SectionTitle from "../sectionTitle";
 
-const CreateTransfer = () => {
+const CreateTransfer = ({ contract }) => {
 
-    const { web3, tContract, isConnected, ownerAddress, setIsLoading } = useAppContext();
+    const { web3, isConnected, ownerAddress, setIsLoading } = useAppContext();
 
     const [transferAddress, setTransferAddress] = useState('');
     const [transferAmount, setTransferAmount] = useState('');
@@ -14,12 +14,12 @@ const CreateTransfer = () => {
 
     useEffect(() => {
         async function run () {
-            if (tContract) {
+            if (contract) {
                 await getLatestItem();
             } 
         }
         run();
-    }, [tContract]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [contract]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const createTransferRequest = async () => {
         if (!isConnected) {
@@ -39,7 +39,7 @@ const CreateTransfer = () => {
         
         setIsLoading(true);
         try{
-            await tContract.methods.newTransferRequest(transferAddress, web3.utils.toWei(transferAmount.toString(), "ether"))
+            await contract.methods.newTransferRequest(transferAddress, web3.utils.toWei(transferAmount.toString(), "ether"))
             .send({ from: ownerAddress })
             .on('receipt', async(res) => {
                 NotificationManager.info("Added successfully!", "Info");
@@ -74,7 +74,7 @@ const CreateTransfer = () => {
 
         try {
             setIsLoading(true);
-            await tContract.methods.approveTransferRequest()
+            await contract.methods.approveTransferRequest()
             .send({ from: ownerAddress })
             .on('receipt', async(res) => {
                 NotificationManager.success("Sent successfully!", "Success");
@@ -103,7 +103,7 @@ const CreateTransfer = () => {
 
         try {
             setIsLoading(true);
-            await tContract.methods.declineTransferRequest()
+            await contract.methods.declineTransferRequest()
             .send({ from: ownerAddress })
             .on('receipt', async(res) => {
                 NotificationManager.success("Sent successfully!", "Success");
@@ -122,7 +122,7 @@ const CreateTransfer = () => {
 
     const getLatestItem = async() => {
         let flag = 0;
-        const treasury_transfer = await tContract.methods.transferRequest().call();
+        const treasury_transfer = await contract.methods.transferRequest().call();
         if (treasury_transfer.isActive) {
             flag = 1;
             setTransferRequest({...treasury_transfer, flag: 1});
@@ -131,7 +131,7 @@ const CreateTransfer = () => {
         else setTransferRequest(null);
 
         if (flag > 0) {
-            await tContract.getPastEvents('Transfer', {
+            await contract.getPastEvents('Transfer', {
                 filter: { status: false },
                 fromBlock: 	21888857,
                 toBlock: 'latest'
@@ -143,7 +143,7 @@ const CreateTransfer = () => {
 
     const getTransferHistory = async() => {
         try {
-            await tContract.getPastEvents('Transfer', {
+            await contract.getPastEvents('Transfer', {
                 filter: { status: true },
                 fromBlock: 	21888857,
                 toBlock: 'latest'
@@ -158,7 +158,7 @@ const CreateTransfer = () => {
             // }).then((events) => {
             //     setLastClaimTransfersList(events);
             // });
-            // await axios.get(`https://api-testnet.bscscan.com/api?module=logs&action=getLogs&fromBlock=21888857&toBlock=latest&address=${config.treasuryAddress}&topic0=0x6c201685d45b350967167ae4bbf742a99dd958968b9c36ce07db27dda4d581d0&apikey=${config.apiKey}`).then(res => {
+            // await axios.get(`https://api-testnet.bscscan.com/api?module=logs&action=getLogs&fromBlock=21888857&toBlock=latest&address=${config.inboundTreasuryAddress}&topic0=0x6c201685d45b350967167ae4bbf742a99dd958968b9c36ce07db27dda4d581d0&apikey=${config.apiKey}`).then(res => {
             //     let { result } = res.data;
             //     result = result.filter(item => item.)
             //     setTransferedList(res.data.result);

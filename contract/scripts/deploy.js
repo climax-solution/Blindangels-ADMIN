@@ -7,14 +7,22 @@
 const hre = require("hardhat");
 
 async function main() {
-  const owners = ["0x8264CA428e39E42b6A8208E8B368BbB94225Dfa2", "0xcB8e26623C2e908d7e38c3A4cF9035208A14227f", "0xf97ABeA6207881eC1b4695b08194D6488cb4D2BE"];
-  const BlindAngelTreasury = await hre.ethers.getContractFactory("BlindAngelTreasury");
-  const treasury = await BlindAngelTreasury.deploy(owners);
-  await treasury.deployed();
+  const owners = ["0xbD8F90c889692b80aC1B3E5301449eB0eA2Cf950", "0x03C850825ddcd950B1eb4010bEcA9F87a2E64D55", "0xb9971b5dF187d6c71b3925Ad72f0787b8e1a8959"];
+  // const BlindAngelInboundTreasury = await hre.ethers.getContractFactory("BlindAngelInboundTreasury");
+  // const inboundTreasury = await BlindAngelInboundTreasury.deploy(owners);
+  // await inboundTreasury.deployed();
 
-  console.log(
-    `BlindAngelTreasury is deployed to ${treasury.address}`
-  );
+  // console.log(
+  //   `BlindAngelInboundTreasury is deployed to ${inboundTreasury.address}`
+  // );
+
+  // const BlindAngelOutboundTreasury = await hre.ethers.getContractFactory("BlindAngelOutboundTreasury");
+  // const outboundTreasury = await BlindAngelOutboundTreasury.deploy(owners);
+  // await outboundTreasury.deployed();
+
+  // console.log(
+  //   `BlindAngelOutboundTreasury is deployed to ${outboundTreasury.address}`
+  // );
 
   const nft = "0x0D8A260Da16D90fF15327850a192CAF933837E26";
   const BlindAngelClaim = await hre.ethers.getContractFactory("BlindAngelClaim");

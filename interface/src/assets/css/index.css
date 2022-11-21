@@ -103,3 +103,7 @@ fieldset[disabled] label.form-control {
     padding-left: 15px;
     padding-right: 15px;
 }
+
+.max-w-250 {
+    max-width: 250px;
+}

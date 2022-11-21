@@ -12,11 +12,12 @@ import { useAppContext } from '../context';
 import Week from './components/Week/week';
 import Freeze from './components/Freeze/freez';
 import { Nav, Tab } from 'react-bootstrap';
+import Deposit from './components/Deposit/deposit.js';
 
-const { treasuryAddress, claimAddress } = config;
+const { inboundTreasuryAddress, outboundTreasuryAddress, claimAddress } = config;
 const Lawis = () => {
     
-    const { web3, tContract, cContract, ownerAddress, setOwnerAddress, isLoading, isConnected, setIsConnected } = useAppContext();
+    const { web3, tInContract, tOutContract, cContract, ownerAddress, setOwnerAddress, isLoading, isConnected, setIsConnected } = useAppContext();
 
     const [treasuryBalance, setTreasuryBalance] = useState('Loading...');
     const [claimWalletBalance,  setClaimWalletBalance ] = useState('Loading...');
@@ -24,7 +25,7 @@ const Lawis = () => {
 
     useEffect(() => {
         async function initalSetting() {
-            const TBalance = await web3.eth.getBalance(treasuryAddress);
+            const TBalance = await web3.eth.getBalance(inboundTreasuryAddress);
             const CBalance = await web3.eth.getBalance(claimAddress);
     
             setTreasuryBalance(web3.utils.fromWei(TBalance, 'ether'));
@@ -72,7 +73,7 @@ const Lawis = () => {
                                     Treasury address
                                 </h5>
                                 <div className="card-text" id="tokenAddress">
-                                    {treasuryAddress}
+                                    {inboundTreasuryAddress}
                                 </div>
                             </div>
                         </div>
@@ -174,29 +175,58 @@ const Lawis = () => {
                             <Nav.Link eventKey="outbound">Outbound</Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
-                            <Nav.Link eventKey="third">Claim</Nav.Link>
+                            <Nav.Link eventKey="claim">Claim</Nav.Link>
                         </Nav.Item>
                     </Nav>
                 </div>
                 <Tab.Content>
                     <Tab.Pane eventKey="inbound">
                         <CreateTransfer
-                            tContract={tContract}
-                            web3={web3}
+                            contract={tInContract}
                         />
 
                         <Withdraw
-                            cContract={cContract}
-                            web3={web3}
+                            contract={tInContract}
+                        />
+                        
+                        <Deposit
+                            contract={tInContract}
                         />
 
                         <TransferHistory
-                            web3={web3}
+                            address={inboundTreasuryAddress}
                         />
+
                     </Tab.Pane>
                     <Tab.Pane eventKey="outbound">
+                        <CreateTransfer
+                            contract={tOutContract}
+                        />
+
+                        <Withdraw
+                            contract={tOutContract}
+                        />
+                        
+                        <Deposit
+                            contract={tOutContract}
+                        />
+
+                        <TransferHistory
+                            address={outboundTreasuryAddress}
+                        />
+
+                    </Tab.Pane>
+                    <Tab.Pane eventKey="claim">
                         <div className="table-upload-wrapper mt-5">
                 
+                            <Withdraw
+                                contract={cContract}
+                            />
+
+                            <Deposit
+                                contract={cContract}
+                            />
+
                             <UploadClaim
                                 web3={web3}
                             />

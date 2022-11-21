@@ -3,9 +3,9 @@ import { NotificationManager } from "react-notifications";
 import { useAppContext } from "../../../context";
 import SectionTitle from "../sectionTitle";
 
-const Withdraw = () => {
+const Withdraw = ({ contract }) => {
 
-    const { web3, cContract, isConnected, ownerAddress, setIsLoading } = useAppContext();
+    const { web3, isConnected, ownerAddress, setIsLoading } = useAppContext();
 
     const [withdrawAddress, setWithdrawAddress] = useState('');
     const [withdrawAmount, setWithdrawAmount] = useState('');
@@ -14,12 +14,12 @@ const Withdraw = () => {
 
     useEffect(() => {
         async function run () {
-            if (cContract) {
+            if (contract) {
                 await getLatestItem();
             } 
         }
         run();
-    }, [cContract]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [contract]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const createWithdrawRequest = async () => {
         if (!isConnected) {
@@ -39,7 +39,7 @@ const Withdraw = () => {
         
         setIsLoading(true);
         try{
-            await cContract.methods.newWithdrawRequest(withdrawAddress, web3.utils.toWei(withdrawAmount.toString(), "ether"))
+            await contract.methods.newWithdrawRequest(withdrawAddress, web3.utils.toWei(withdrawAmount.toString(), "ether"))
             .send({ from: ownerAddress })
             .on('receipt', async(res) => {
                 NotificationManager.info("Requested successfully!", "Info");
@@ -74,7 +74,7 @@ const Withdraw = () => {
 
         try {
             setIsLoading(true);
-            await cContract.methods.approveWithdrawRequest()
+            await contract.methods.approveWithdrawRequest()
             .send({ from: ownerAddress })
             .on('receipt', async(res) => {
                 NotificationManager.success("Withdraw successfully!", "Success");
@@ -103,7 +103,7 @@ const Withdraw = () => {
 
         try {
             setIsLoading(true);
-            await cContract.methods.declineWithdrawRequest()
+            await contract.methods.declineWithdrawRequest()
             .send({ from: ownerAddress })
             .on('receipt', async(res) => {
                 NotificationManager.success("Declined withdraw successfully!", "Success");
@@ -122,7 +122,7 @@ const Withdraw = () => {
 
     const getLatestItem = async() => {
         // let flag = 0;
-        const withdraw = await cContract.methods.withdrawRequest().call();
+        const withdraw = await contract.methods.withdrawRequest().call();
         if (withdraw.isActive) {
             // flag = 1;
             setWithdrawRequest({...withdraw });
@@ -131,7 +131,7 @@ const Withdraw = () => {
         else setWithdrawRequest(null);
 
         // if (flag > 0) {
-        //     await cContract.getPastEvents('Withdraw', {
+        //     await contract.getPastEvents('Withdraw', {
         //         filter: { status: false },
         //         fromBlock: 	21888857,
         //         toBlock: 'latest'
@@ -143,7 +143,7 @@ const Withdraw = () => {
 
     const getWithdrawHistory = async() => {
         try {
-            await cContract.getPastEvents('Withdraw', {
+            await contract.getPastEvents('Withdraw', {
                 filter: { status: true },
                 fromBlock: 	21888857,
                 toBlock: 'latest'
@@ -151,7 +151,7 @@ const Withdraw = () => {
                 // setLastWithdrawsTreasury(events);
             });
 
-            // await cContract.getPastEvents('Withdraw', {
+            // await contract.getPastEvents('Withdraw', {
             //     filter: { status: true },
             //     fromBlock: 	21888857,
             //     toBlock: 'latest'

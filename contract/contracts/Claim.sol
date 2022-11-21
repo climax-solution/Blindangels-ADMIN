@@ -134,9 +134,9 @@ contract BlindAngelClaim is Ownable {
         frozen = false;
     }
 
-    function deposit(uint256 amount) external payable {
-        require(msg.value >= amount);
-        emit Deposit(msg.sender, amount);
+    function deposit() external payable {
+        require(msg.value > 0, "insufficient funds");
+        emit Deposit(msg.sender, msg.value);
     }
 
     function newWithdrawRequest(address to, uint256 amount) external onlySigners {

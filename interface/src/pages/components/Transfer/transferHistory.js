@@ -1,12 +1,61 @@
+import axios from "axios";
+import { useEffect } from "react";
 import { useState } from "react";
 import { useAppContext } from "../../../context";
 import SectionTitle from "../sectionTitle";
+import config from "../../../config.json";
 
-const TransferHistory = () => {
+const { bitqueryKey } = config;
+
+const TransferHistory = ({ address }) => {
 
     const { web3 } = useAppContext();
 
-    const [lastTransfersTreasury, /*setLastTransfersTreasury*/] = useState([]);
+    const [lastTransfersTreasury, setLastTransfersTreasury] = useState([]);
+
+    useEffect(() => {
+        console.log(address);
+        if (address) fetchTransferHistory();
+    }, [address])
+
+    const fetchTransferHistory = async() => {
+        const query = `
+            query{
+                ethereum(network: goerli) {
+                    smartContractEvents(
+                        smartContractAddress: {is: "${address}"}
+                        smartContractEvent: {is: "Transfer"}
+                        options: {desc: "block.height", limit: 10}
+                    ) {
+                        block {
+                            height
+                        }
+                        arguments {
+                            value
+                            argument
+                        }
+                    }
+                }            
+            }
+        `;
+        await axios.post(
+            "https://graphql.bitquery.io/",
+            {
+                query
+            },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-API-KEY": bitqueryKey
+                },
+            }
+        ).then(res => {
+            const { data } = res.data;
+            setLastTransfersTreasury(data.ethereum.smartContractEvents);
+        }).catch(err => {
+            setLastTransfersTreasury([]);
+        })
+    }
 
     return (
         <div className="container mb-5 mt-10" id="treasury-last-transfer">
@@ -24,14 +73,14 @@ const TransferHistory = () => {
                     </thead>
                     <tbody>
                         {
-                            lastTransfersTreasury.map(({ returnValues: item}, idx) => {
+                            lastTransfersTreasury.map(({ arguments: item}, idx) => {
                                 return (
                                     <tr key={idx}>
                                         <td>{idx + 1}</td>
-                                        <td>{item.createdBy}</td>
-                                        <td>{item.to}</td>
-                                        <td>{item.dealedBy}</td>
-                                        <td>{web3.utils.fromWei(item.value, "ether")}</td>
+                                        <td>{item[0].value}</td>
+                                        <td>{item[2].value}</td>
+                                        <td>{item[1].value}</td>
+                                        <td>{web3.utils.fromWei(item[3].value, "ether")}</td>
                                     </tr>
                                 )
                             })
