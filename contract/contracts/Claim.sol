@@ -187,13 +187,17 @@ contract BlindAngelClaim is Ownable {
             else revert("signer is not existed");
         }
 
+        if (!status) {
+            require(admins.length > 2, "admin count is 2 at least");
+        }
+
         signerRequest = SignerRequest({
             createdBy: msg.sender,
             signer: signer,
             isActive: true,
             status: status
         });
-        
+
     }
     
     function declineSignerRequest() public onlySigners {
@@ -220,5 +224,11 @@ contract BlindAngelClaim is Ownable {
             emit RemoveSigner(msg.sender, signerRequest.createdBy, signer);
             delete adminsExist[signer];
         }
+
+        signerRequest.isActive = false;
+    }
+
+    function getAdmins() public view returns(address[] memory) {
+        return admins;
     }
 }

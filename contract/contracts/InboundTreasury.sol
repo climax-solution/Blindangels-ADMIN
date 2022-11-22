@@ -102,6 +102,10 @@ contract BlindAngelInboundTreasury is Ownable {
             else revert("signer is not existed");
         }
 
+        if (!status) {
+            require(admins.length > 2, "admin count is 2 at least");
+        } 
+
         signerRequest = SignerRequest({
             createdBy: msg.sender,
             signer: signer,
@@ -135,6 +139,8 @@ contract BlindAngelInboundTreasury is Ownable {
             emit RemoveSigner(msg.sender, signerRequest.createdBy, signer);
             delete adminsExist[signer];
         }
+
+        signerRequest.isActive = false;
     }
     
     function newWithdrawRequest(address to, uint256 amount) external onlySigners {
@@ -170,6 +176,10 @@ contract BlindAngelInboundTreasury is Ownable {
     function deposit() external payable {
         require(msg.value > 0, "insufficient funds");
         emit Deposit(msg.sender, msg.value);
+    }
+
+    function getAdmins() public view returns(address[] memory) {
+        return admins;
     }
 
     receive() external payable {}
