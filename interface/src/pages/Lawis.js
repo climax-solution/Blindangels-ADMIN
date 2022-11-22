@@ -13,6 +13,7 @@ import Week from './components/Week/week';
 import Freeze from './components/Freeze/freez';
 import { Nav, Tab } from 'react-bootstrap';
 import Deposit from './components/Deposit/deposit.js';
+import ManageSigner from './components/ManageSigner/manageSigner.js';
 
 const { inboundTreasuryAddress, outboundTreasuryAddress, claimAddress } = config;
 const Lawis = () => {
@@ -181,6 +182,11 @@ const Lawis = () => {
                 </div>
                 <Tab.Content>
                     <Tab.Pane eventKey="inbound">
+
+                        <ManageSigner
+                            contract={tInContract}
+                        />
+
                         <CreateTransfer
                             contract={tInContract}
                         />
@@ -199,6 +205,11 @@ const Lawis = () => {
 
                     </Tab.Pane>
                     <Tab.Pane eventKey="outbound">
+
+                        <ManageSigner
+                            contract={tOutContract}
+                        />
+
                         <CreateTransfer
                             contract={tOutContract}
                         />
@@ -218,7 +229,11 @@ const Lawis = () => {
                     </Tab.Pane>
                     <Tab.Pane eventKey="claim">
                         <div className="table-upload-wrapper mt-5">
-                
+                            
+                            <ManageSigner
+                                contract={cContract}
+                            />
+
                             <Withdraw
                                 contract={cContract}
                             />

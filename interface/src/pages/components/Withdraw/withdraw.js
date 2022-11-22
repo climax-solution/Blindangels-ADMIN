@@ -85,7 +85,7 @@ const Withdraw = ({ contract }) => {
             NotificationManager.error("Transaction is failed!", "Failed");
         }
         setIsLoading(false);
-        // await getLatestItem();
+        await getLatestItem();
         // await getWithdrawHistory();
         // await initalSetting();
     }
