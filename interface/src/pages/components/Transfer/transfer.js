@@ -49,7 +49,6 @@ const CreateTransfer = ({ contract }) => {
         }
         catch(err) {
             if (err) {
-                console.log("err", err);
                 NotificationManager.error("Request is failed!", "Failed");
             }
         }

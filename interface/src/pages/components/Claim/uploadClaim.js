@@ -47,8 +47,9 @@ const UploadClaim = () => {
 
         let chunkList = [];
         setIsLoading(true);
-        console.log(web3.utils.toWei("0.005", 'ether'))
         try {
+            const _frozen = await cContract.methods.frozen().call();
+            if (!_frozen) throw new Error("Freeze claim");
             for (let i = 0; i < reflectionList.length; i ++) {
                 if(chunkList.filter((c) => c[0] === reflectionList[i].account ).length > 0) continue;
                 chunkList.push([
@@ -61,7 +62,6 @@ const UploadClaim = () => {
             const merkleTree = new MerkleTree(elements, keccak256, { sort: true });
             const root = merkleTree.getHexRoot();
             const proof = merkleTree.getHexProof(elements[2]);
-            console.log(proof);
             await cContract.methods.updateClaimList(root)
             .send({ from : ownerAddress })
             .on('receipt', (res) => {
@@ -71,9 +71,8 @@ const UploadClaim = () => {
             })
             .catch(err => console.log)
         } catch(err) {
-            console.log(err);
-            if (err) {
-                NotificationManager.error("Upload failed!", "Failed");
+            if (err?.code != 4001) {
+                NotificationManager.error(err.response.message, "Failed");
             }
         }
         // setRequestedList(reflectionList);

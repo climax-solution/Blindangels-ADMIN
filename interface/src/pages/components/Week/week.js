@@ -25,14 +25,17 @@ const Week = () => {
         setIsLoading(true);
         try {
             if (type) {
-                await cContract.methods.increaseWeek().send({ from: ownerAddress });
+                const _frozen = await cContract.methods.frozen().call();
+                if (_frozen) await cContract.methods.increaseWeek().send({ from: ownerAddress });
+                else throw new Error("Freeze claim");
             } else {
                 await cContract.methods.decreaseWeek().send({ from: ownerAddress });
             }
             NotificationManager.success("Success!");
         } catch(err) {
-            console.log(err);
-            NotificationManager.error("Failed");
+            if (err?.code != 4001) {
+                NotificationManager.error(err.response.message);
+            }
         }
         setIsLoading(false);
         await getWeek();
