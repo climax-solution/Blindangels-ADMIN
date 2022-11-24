@@ -16,6 +16,7 @@ export const AppWrapper = ({ children }) => {
     const [ownerAddress, setOwnerAddress] = useState('Loading...');
     const [isLoading, setIsLoading] = useState(false);
     const [isConnected, setIsConnected] = useState(false);
+    const [activeTab, setActiveTab] = useState("inbound");
 
     useEffect(() => {
         const _web3 = getWeb3();
@@ -32,7 +33,18 @@ export const AppWrapper = ({ children }) => {
     }, [])
 
     const context = {
-        web3, tInContract, tOutContract, cContract, ownerAddress, setOwnerAddress, isLoading, setIsLoading, isConnected, setIsConnected
+        web3,
+        tInContract,
+        tOutContract,
+        cContract,
+        ownerAddress,
+        isLoading,
+        isConnected,
+        activeTab,
+        setOwnerAddress,
+        setIsLoading,
+        setIsConnected,
+        setActiveTab
     };
 
     return(

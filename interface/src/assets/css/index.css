@@ -107,3 +107,12 @@ fieldset[disabled] label.form-control {
 .max-w-250 {
     max-width: 250px;
 }
+
+.signers-list {
+    max-height: 350px;
+    overflow: auto;
+}
+
+.list-group-item {
+    font-size: 14px;
+}

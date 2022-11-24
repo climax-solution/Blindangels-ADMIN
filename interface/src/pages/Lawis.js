@@ -18,7 +18,19 @@ import ManageSigner from './components/ManageSigner/manageSigner.js';
 const { inboundTreasuryAddress, outboundTreasuryAddress, claimAddress } = config;
 const Lawis = () => {
     
-    const { web3, tInContract, tOutContract, cContract, ownerAddress, setOwnerAddress, isLoading, isConnected, setIsConnected } = useAppContext();
+    const {
+        web3,
+        tInContract,
+        tOutContract,
+        cContract,
+        ownerAddress,
+        isLoading,
+        isConnected,
+        activeTab,
+        setOwnerAddress,
+        setIsConnected,
+        setActiveTab
+    } = useAppContext();
 
     const [treasuryBalance, setTreasuryBalance] = useState('Loading...');
     const [claimWalletBalance,  setClaimWalletBalance ] = useState('Loading...');
@@ -26,14 +38,14 @@ const Lawis = () => {
 
     useEffect(() => {
         async function initalSetting() {
-            const TBalance = await web3.eth.getBalance(inboundTreasuryAddress);
+            const TBalance = await web3.eth.getBalance(activeTab == 'inbound' ? inboundTreasuryAddress : outboundTreasuryAddress);
             const CBalance = await web3.eth.getBalance(claimAddress);
     
             setTreasuryBalance(web3.utils.fromWei(TBalance, 'ether'));
             setClaimWalletBalance(web3.utils.fromWei(CBalance, 'ether'));
         }
         if (web3) initalSetting();
-    }, [web3]);
+    }, [web3, activeTab]);
 
     const walletConnect = async() => {
         if (web3) {
@@ -74,7 +86,7 @@ const Lawis = () => {
                                     Treasury address
                                 </h5>
                                 <div className="card-text" id="tokenAddress">
-                                    {inboundTreasuryAddress}
+                                    {activeTab == 'inbound' ? inboundTreasuryAddress : outboundTreasuryAddress}
                                 </div>
                             </div>
                         </div>
@@ -166,7 +178,7 @@ const Lawis = () => {
                 </div>
             </div>
 
-            <Tab.Container id="left-tabs-example" defaultActiveKey="inbound">
+            <Tab.Container id="left-tabs-example" defaultActiveKey="inbound" onSelect={(value) => setActiveTab(value)}>
                 <div className='container'>
                     <Nav variant="pills" className='border p-3'>
                         <Nav.Item>
