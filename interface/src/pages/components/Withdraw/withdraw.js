@@ -267,7 +267,7 @@ const Withdraw = ({ contract }) => {
                 <div className="col-2">
                     <div className="card">
                         <div className="card-body">
-                            <button type="button" className={`btn btn-success w-100 mb-1 ${ !false && "disabled"}`} id="withdrawApproveButton"
+                            <button type="button" className={`btn btn-success w-100 mb-1 ${ !isConnected && "disabled"}`} id="withdrawApproveButton"
                                 onClick={ () =>approveWithdrawRequest() }>Approve</button>
                             <button type="button" className="btn btn-light w-100" id="withdrawDeclineButton"
                                 onClick={ () =>declineWithdrawRequest() }>Cancel</button>

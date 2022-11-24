@@ -11,6 +11,7 @@ const ManageSigner = ({ contract }) => {
     const [signerAddress, setSignerAddress] = useState('');
     const [signerRequest, setSignerRequest] = useState('');
     const [requestType, setRequestType] = useState('');
+    const [signers, setSigners] = useState([]);
 
     useEffect(() => {
         async function run() {
@@ -134,12 +135,33 @@ const ManageSigner = ({ contract }) => {
         }
 
         else setSignerRequest(null);
+
+        const signers = await contract.methods.getAdmins().call();
+        setSigners(signers); 
     }
 
     return (
         <div className="container" id="manage-signers">
 
             <SectionTitle title="Manage Signers" />
+            <div className="row mb-4">
+                <div className="col-5">
+                    <div className="card">
+                        <div className="card-body">
+                            <h5 className="card-title">
+                                <strong>Existing Signers</strong>
+                            </h5>
+                            <ul className="list-group signers-list">
+                                {
+                                    signers.map((item, idx) => (
+                                        <li key={idx} className="list-group-item">{item}</li>
+                                    ))
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div className="row justify-content-center">
                 <div className="col-5">
                     <div className="card">
