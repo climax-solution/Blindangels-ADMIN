@@ -33,7 +33,7 @@ const Week = () => {
             }
             NotificationManager.success("Success!");
         } catch(err) {
-            if (err?.code != 4001) {
+            if (err?.code !== 4001) {
                 if (err?.response?.message) NotificationManager.error(err.response.message, "Failed");
                 else NotificationManager.error("Transaction is failed", "Failed");
             }

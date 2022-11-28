@@ -14,9 +14,8 @@ const TransferHistory = ({ address }) => {
     const [lastTransfersTreasury, setLastTransfersTreasury] = useState([]);
 
     useEffect(() => {
-        console.log(address);
         if (address) fetchTransferHistory();
-    }, [address])
+    }, [address]) // eslint-disable-next-line
 
     const fetchTransferHistory = async() => {
         const query = `

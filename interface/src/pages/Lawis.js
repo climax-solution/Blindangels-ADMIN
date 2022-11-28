@@ -38,7 +38,7 @@ const Lawis = () => {
 
     useEffect(() => {
         async function initalSetting() {
-            const TBalance = await web3.eth.getBalance(activeTab == 'inbound' ? inboundTreasuryAddress : outboundTreasuryAddress);
+            const TBalance = await web3.eth.getBalance(activeTab === 'inbound' ? inboundTreasuryAddress : outboundTreasuryAddress);
             const CBalance = await web3.eth.getBalance(claimAddress);
     
             setTreasuryBalance(web3.utils.fromWei(TBalance, 'ether'));
@@ -86,7 +86,7 @@ const Lawis = () => {
                                     Treasury address
                                 </h5>
                                 <div className="card-text" id="tokenAddress">
-                                    {activeTab == 'inbound' ? inboundTreasuryAddress : outboundTreasuryAddress}
+                                    {activeTab === 'inbound' ? inboundTreasuryAddress : outboundTreasuryAddress}
                                 </div>
                             </div>
                         </div>

@@ -33,18 +33,18 @@ const ManageSigner = ({ contract }) => {
             return;
         }
 
-        if (requestType == '') {
+        if (requestType === '') {
             NotificationManager.warning("Please choose management type!", "Warning");
             return;
         }
 
         setIsLoading(true);
         try {
-            if (requestType == "1") {
+            if (requestType === "1") {
                 const existSigners = await contract.methods.getAdmins().call();
-                if (existSigners.length == 2) throw new Error("Signer is 2 at least");
+                if (existSigners.length === 2) throw new Error("Signer is 2 at least");
             }
-            await contract.methods.newSignerRequest(signerAddress, requestType == "0" ? true : false)
+            await contract.methods.newSignerRequest(signerAddress, requestType === "0" ? true : false)
                 .send({ from: ownerAddress })
                 .on('receipt', async (res) => {
                     NotificationManager.info("Added successfully!", "Info");
@@ -53,7 +53,7 @@ const ManageSigner = ({ contract }) => {
                 });
         }
         catch (err) {
-            if (err?.code != 4001) {
+            if (err?.code !== 4001) {
                 if (err?.response?.message) NotificationManager.error(err.response.message, "Failed");
                 else NotificationManager.error("Transaction is failed", "Failed");
             }
@@ -75,7 +75,7 @@ const ManageSigner = ({ contract }) => {
             return;
         }
 
-        if (signerRequest.createdBy.toLowerCase() == ownerAddress.toLowerCase()) {
+        if (signerRequest.createdBy.toLowerCase() === ownerAddress.toLowerCase()) {
             NotificationManager.warning("You can't approve self request", "Warning");
             return;
         }
@@ -120,7 +120,7 @@ const ManageSigner = ({ contract }) => {
                 })
 
         } catch (err) {
-            if (err.code != 4001) {
+            if (err.code !== 4001) {
                 NotificationManager.error("Transaction is failed!", "Failed");
             }
         }
@@ -189,7 +189,7 @@ const ManageSigner = ({ contract }) => {
                                             type="radio"
                                             name="register"
                                             id="flexRadioDefault1"
-                                            checked={requestType == "0"}
+                                            checked={requestType === "0"}
                                             value="0"
                                             onChange={() => setRequestType("0")}
                                         />
@@ -204,7 +204,7 @@ const ManageSigner = ({ contract }) => {
                                             type="radio"
                                             name="remove"
                                             id="flexRadioDefault2"
-                                            checked={requestType == "1"}
+                                            checked={requestType === "1"}
                                             value="1"
                                             onChange={() => setRequestType("1")}
                                         />
@@ -254,7 +254,7 @@ const ManageSigner = ({ contract }) => {
                                         type="text"
                                         className="form-control"
                                         id="createSignerTokens"
-                                        value={signerRequest ? signerRequest.status == true ? "Register" : "Remove" : ""}
+                                        value={signerRequest ? signerRequest.status === true ? "Register" : "Remove" : ""}
                                         readOnly
                                     />
                                 </div>
