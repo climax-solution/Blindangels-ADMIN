@@ -221,6 +221,7 @@ contract BlindAngelClaim is Ownable {
                 admins[index] = admins[admins.length -1];
                 adminsExist[admins[index]].index = index;
             }
+            admins.pop();
             emit RemoveSigner(msg.sender, signerRequest.createdBy, signer);
             delete adminsExist[signer];
         }
