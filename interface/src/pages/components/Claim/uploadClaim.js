@@ -61,7 +61,6 @@ const UploadClaim = () => {
             const elements = reflectionList.map((x, idx) => utils.solidityKeccak256(["uint256","address", "uint256", "uint256"], [idx + 1, x.account, web3.utils.toWei(x.balance, 'ether'), week]));
             const merkleTree = new MerkleTree(elements, keccak256, { sort: true });
             const root = merkleTree.getHexRoot();
-            const proof = merkleTree.getHexProof(elements[2]);
             await cContract.methods.updateClaimList(root)
             .send({ from : ownerAddress })
             .on('receipt', (res) => {
@@ -72,7 +71,8 @@ const UploadClaim = () => {
             .catch(err => console.log)
         } catch(err) {
             if (err?.code != 4001) {
-                NotificationManager.error(err.response.message, "Failed");
+                if (err?.response?.message) NotificationManager.error(err.response.message, "Failed");
+                else NotificationManager.error("Transaction is failed", "Failed");
             }
         }
         // setRequestedList(reflectionList);

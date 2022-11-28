@@ -54,7 +54,8 @@ const ManageSigner = ({ contract }) => {
         }
         catch (err) {
             if (err?.code != 4001) {
-                NotificationManager.error(err.response.message, "Failed");
+                if (err?.response?.message) NotificationManager.error(err.response.message, "Failed");
+                else NotificationManager.error("Transaction is failed", "Failed");
             }
         }
 
