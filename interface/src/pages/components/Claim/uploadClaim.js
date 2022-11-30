@@ -16,7 +16,7 @@ const UploadClaim = () => {
     const [claimHash, setClaimHash] = useState('');
 
     useEffect(() => {
-        if (cContract) getClaimMerkleTree();
+        if (cContract) getClaimMerkleTree(); // eslint-disable-next-line
     }, [cContract])
 
     const importReflectionList = (e) => {

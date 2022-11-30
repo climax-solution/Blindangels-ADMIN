@@ -23,7 +23,7 @@ const ApproveClaimList = () => {
     }, []);
 
     useEffect(() => {
-        if(cContract) getClaimListRequest();
+        if(cContract) getClaimListRequest(); // eslint-disable-next-line
     }, [cContract])
 
     const approveClaimList = async() => {
