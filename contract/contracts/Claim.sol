@@ -32,6 +32,12 @@ contract BlindAngelClaim is Ownable {
         bool status;
     }
 
+    struct ClaimRootRequest {
+        address createdBy;
+        bytes32 root;
+        bool isActive;
+    }
+
     event Claimed(address indexed from, uint256 indexed amount, uint256 week);
     event UpdatedClaimList(address indexed updator, bytes32 root_);
     event ApprovedClaimList(address indexed dealer);
@@ -53,6 +59,7 @@ contract BlindAngelClaim is Ownable {
 
     WithdrawStruct public withdrawRequest;
     SignerRequest public signerRequest;
+    ClaimRootRequest public claimRootRequest;
 
     modifier onlySigners() {
         require(adminsExist[msg.sender].status, "not signer");
@@ -96,34 +103,35 @@ contract BlindAngelClaim is Ownable {
         emit Claimed(msg.sender, amount, week);
     }
 
-    function updateClaimList(bytes32 root_) external onlySigners {
+    function newClaimListRequest(bytes32 root_) external onlySigners {
         require(frozen);
-        
-        claimMerkleRoot = root_;
-        last_creator = msg.sender;
-        isApproved = false;
-        updatedClaimList = true;
+
+        claimRootRequest = ClaimRootRequest(msg.sender, root_, true);
         
         emit UpdatedClaimList(msg.sender, root_);
     }
 
-    function approveClaimList() external onlySigners {
-        require(last_creator != msg.sender, "caller is not available for apporving");
-        require(!isApproved, "not available approve");
-        require(updatedClaimList, "not updated claim list");
+    function approveClaimListRequest() external onlySigners {
+        require(frozen);
+        require(claimRootRequest.createdBy != msg.sender, "caller is not available to approve");
+        require(claimRootRequest.isActive, "request is not created");
 
-        frozen = false;
-        isApproved = true;
-        updatedClaimList = false;
+        claimMerkleRoot = claimRootRequest.root;
 
         emit ApprovedClaimList(msg.sender);
+    }
+
+    function declineClaimListRequest() external onlySigners {
+        require(claimRootRequest.isActive, "request is not created");
+
+        delete claimRootRequest;
+
+        emit DeclinedClaimList(msg.sender);
     }
 
     function clearClaimList() external onlySigners {
         delete claimMerkleRoot;
         frozen = false;
-
-        emit DeclinedClaimList(msg.sender);
     }
 
     function freeze() external onlySigners {
