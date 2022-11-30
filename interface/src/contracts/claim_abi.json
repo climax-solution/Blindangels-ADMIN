@@ -249,7 +249,7 @@
   },
   {
     "inputs": [],
-    "name": "approveClaimList",
+    "name": "approveClaimListRequest",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -310,6 +310,29 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "claimRootRequest",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "createdBy",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "root",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bool",
+        "name": "isActive",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -336,6 +359,13 @@
   {
     "inputs": [],
     "name": "clearClaimList",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "declineClaimListRequest",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -404,6 +434,19 @@
   {
     "inputs": [],
     "name": "increaseWeek",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "root_",
+        "type": "bytes32"
+      }
+    ],
+    "name": "newClaimListRequest",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -521,19 +564,6 @@
   {
     "inputs": [],
     "name": "unfreeze",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "root_",
-        "type": "bytes32"
-      }
-    ],
-    "name": "updateClaimList",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

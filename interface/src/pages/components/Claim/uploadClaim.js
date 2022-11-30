@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MerkleTree } from "merkletreejs";
 import { utils } from "ethers";
 import keccak256 from "keccak256";
@@ -13,6 +13,11 @@ const UploadClaim = () => {
 
     const [reflectionList, setReflectionList] = useState([]);
     const [week, setWeek] = useState('');
+    const [claimHash, setClaimHash] = useState('');
+
+    useEffect(() => {
+        if (cContract) getClaimMerkleTree();
+    }, [cContract])
 
     const importReflectionList = (e) => {
         if (!isConnected) {
@@ -61,7 +66,7 @@ const UploadClaim = () => {
             const elements = reflectionList.map((x, idx) => utils.solidityKeccak256(["uint256","address", "uint256", "uint256"], [idx + 1, x.account, web3.utils.toWei(x.balance, 'ether'), week]));
             const merkleTree = new MerkleTree(elements, keccak256, { sort: true });
             const root = merkleTree.getHexRoot();
-            await cContract.methods.updateClaimList(root)
+            await cContract.methods.newClaimListRequest(root)
             .send({ from : ownerAddress })
             .on('receipt', (res) => {
                 NotificationManager.success("Upload successfully!", "Success");
@@ -80,72 +85,82 @@ const UploadClaim = () => {
         setIsLoading(false);
     }
 
+    const getClaimMerkleTree = async() => {
+        const hash = await cContract.methods.claimMerkleRoot().call();
+        setClaimHash(hash);
+    }
     return (
-        <div className="container">
-            <SectionTitle title="Upload Reflections Claim List"/>
-            <div className='row'>
-                <div className="controls-section col">
-                    <div className="upload-file-button">
-                        <div className="file-indicator">
-                            Chose file to upload
+        <>
+            <div className="container">
+                <SectionTitle title="Active Claim MerkleTree Root"/>
+                <span className="btn border">{claimHash}</span>
+            </div>
+            <div className="container">
+                <SectionTitle title="Upload Reflections Claim List"/>
+                <div className='row'>
+                    <div className="controls-section col">
+                        <div className="upload-file-button">
+                            <div className="file-indicator">
+                                Chose file to upload
+                            </div>
+                            <label htmlFor="file-upload" className={`custom-file-upload btn  btn-success ${!isConnected && "disabled"}`}>
+                                Browse
+                            </label>
+                            {
+                            
+                                isConnected ? <input id="file-upload" type="file" accept='.csv' onChange={importReflectionList} /> : ""
+                            }
                         </div>
-                        <label htmlFor="file-upload" className={`custom-file-upload btn  btn-success ${!isConnected && "disabled"}`}>
-                            Browse
-                        </label>
-                        {
-                        
-                            isConnected ? <input id="file-upload" type="file" accept='.csv' onChange={importReflectionList} /> : ""
-                        }
+
+                        <button id="uploadBtn" className={`btn btn-success ${!isConnected && "disabled"}`} onClick={isConnected ? updateClaimList : null}>Upload</button>
+
+                        <div className="filler"></div>
                     </div>
-
-                    <button id="uploadBtn" className={`btn btn-success ${!isConnected && "disabled"}`} onClick={isConnected ? updateClaimList : null}>Upload</button>
-
-                    <div className="filler"></div>
-                </div>
-                <div className='week-secion col'>
-                    <div className="input-group mb-3">
-                        <input
-                            type="number"
-                            className="form-control"
-                            placeholder="Input week number"
-                            id="week"
-                            value={week}
-                            onChange={(e) => setWeek(e.target.value)}
-                        />
+                    <div className='week-secion col'>
+                        <div className="input-group mb-3">
+                            <input
+                                type="number"
+                                className="form-control"
+                                placeholder="Input week number"
+                                id="week"
+                                value={week}
+                                onChange={(e) => setWeek(e.target.value)}
+                            />
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div className="my-5" style={{ maxHeight: "500px", overflow: "auto"}}>
-                <table className="table upload-data">
-                    <thead className='thead-dark'>
-                        <tr>
-                            <th>#</th>
-                            <th>Addresses</th>
-                            <th>Balances</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            reflectionList.map((item, idx) => {
-                                return (
-                                    <tr key={idx}>
-                                        <td>{idx + 1}</td>
-                                        <td>{item.account}</td>
-                                        <td className='text-right'>{item.balance}</td>
-                                    </tr>
-                                )
-                            })
-                        }
-                        {
-                            !reflectionList.length && 
+                <div className="my-5" style={{ maxHeight: "500px", overflow: "auto"}}>
+                    <table className="table upload-data">
+                        <thead className='thead-dark'>
                             <tr>
-                                <td colSpan={3} className="text-center">No rows</td>
+                                <th>#</th>
+                                <th>Addresses</th>
+                                <th>Balances</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {
+                                reflectionList.map((item, idx) => {
+                                    return (
+                                        <tr key={idx}>
+                                            <td>{idx + 1}</td>
+                                            <td>{item.account}</td>
+                                            <td className='text-right'>{item.balance}</td>
+                                        </tr>
+                                    )
+                                })
+                            }
+                            {
+                                !reflectionList.length && 
+                                <tr>
+                                    <td colSpan={3} className="text-center">No rows</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
+        </>
     )
 }
 

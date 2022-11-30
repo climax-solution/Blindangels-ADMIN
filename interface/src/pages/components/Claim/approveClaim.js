@@ -12,6 +12,7 @@ const ApproveClaimList = () => {
 
     const [requestedList, setRequestedList] = useState([]);
     const [csvData, setCsvData] = useState([]);
+    const [claimHash, setClaimHash] = useState('');
     const csvLink = useRef() // setup the ref that we'll use for the hidden CsvLink click once we've updated the data
 
     useEffect(() => {
@@ -20,6 +21,10 @@ const ApproveClaimList = () => {
             setRequestedList(list);
         }
     }, []);
+
+    useEffect(() => {
+        if(cContract) getClaimListRequest();
+    }, [cContract])
 
     const approveClaimList = async() => {
         setIsLoading(true);
@@ -38,7 +43,7 @@ const ApproveClaimList = () => {
         window.localStorage.removeItem('claim-list');
         setIsLoading(true);
         try {
-            await cContract.methods.clearClaimList().send({ from: ownerAddress });
+            await cContract.methods.declineClaimListRequest().send({ from: ownerAddress });
             NotificationManager.info('Cleared reflections successfully!', 'Success');
         } catch {
             NotificationManager.error('Clearing reflections successfully!', 'Failure');
@@ -68,19 +73,19 @@ const ApproveClaimList = () => {
         setCsvData(_csvData);
         csvLink.current.link.click();
     }
+
+    const getClaimListRequest = async() => {
+        const request = await cContract.methods.claimRootRequest().call();
+        if (request.isActive) setClaimHash(request.root);
+    }
+
     return (
         <div className="container">
             <SectionTitle title="Approve Reflections Claim List"/>
-            <button
-                className={`btn btn-success ml-2 ${!isConnected && "disabled"}`}
-                onClick={isConnected ? downloadProofs : null}
-            >Download Proofs</button>
-            <CSVLink
-                data={csvData}
-                className="d-none"
-                ref={csvLink}
-            >Download</CSVLink>
-            {/* <CSVLink data={csvData}>Download me</CSVLink>; */}
+            <div>
+                <strong>Pending Claim Request: </strong>
+                <span className="btn border">{ claimHash ? claimHash : "No pending request" }</span>
+            </div>
             <div className="my-5" style={{ maxHeight: "500px", overflow: "auto"}}>
                 <table className="table upload-data">
                     <thead className='thead-dark'>
@@ -112,10 +117,21 @@ const ApproveClaimList = () => {
                 </table>
             </div>
             <div className="row">
-                <div className="col-2">
-                    <div className="card-body">
-                        <button type="button" className="btn btn-success w-100 mb-1" id="transferApproveButton" onClick={ approveClaimList } >Approve</button>
-                        <button type="button" className="btn btn-light w-100" id="transferDeclineButton" onClick={ clearClaim }>Cancel</button>
+                <div className="d-flex gap-2">
+                    <div>
+                        <button type="button" className={`btn btn-success w-100 mb-1 ${!isConnected && "disabled"}`} id="transferApproveButton" onClick={ isConnected ? approveClaimList :null } >Approve</button>
+                        <button type="button" className={`btn btn-light w-100 ${!isConnected && "disabled"}`} id="transferDeclineButton" onClick={ isConnected ? clearClaim : null }>Cancel</button>
+                    </div>
+                    <div className="ml-3">
+                        <button
+                            className={`btn btn-success ${!isConnected && "disabled"}`}
+                            onClick={isConnected ? downloadProofs : null}
+                        >Download Proofs</button>
+                        <CSVLink
+                            data={csvData}
+                            className="d-none"
+                            ref={csvLink}
+                        >Download</CSVLink>
                     </div>
                 </div>
             </div>
