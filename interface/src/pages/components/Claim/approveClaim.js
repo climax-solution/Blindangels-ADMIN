@@ -29,9 +29,10 @@ const ApproveClaimList = () => {
     const approveClaimList = async() => {
         setIsLoading(true);
         try {
-            await cContract.methods.approveClaimList().send({ from: ownerAddress });
+            await cContract.methods.approveClaimListRequest().send({ from: ownerAddress });
             NotificationManager.success('Approve successfully!', 'Success');
         } catch(err) {
+            console.log(err);
             NotificationManager.error('Approve failure!', 'Failure');
         }
         window.localStorage.removeItem('claim-list');
