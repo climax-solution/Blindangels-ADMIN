@@ -72,7 +72,16 @@ const ApproveClaimList = () => {
         ];
         requestedList.map((item, index) => {
             const proof = merkleTree.getHexProof(elements[index]);
-            _csvData.push([item.account, `[${proof}]`]);
+            if (proof.length == 1) _csvData.push([item.account, `[${proof[0]}]`]);
+
+            if (proof.length > 1) {
+                _csvData.push([item.account, `[${proof[0]}`]);
+                for (let i = 1; i < proof.length; i ++) {
+                    if (i == proof.length - 1) _csvData.push(["", proof[i]]);
+                    else _csvData.push(["", `${proof[i]}]`]);
+                }
+            }
+
             return item;
         });
         setCsvData(_csvData);
