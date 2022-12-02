@@ -8,11 +8,12 @@ import { useAppContext } from "../../../context";
 import SectionTitle from "../sectionTitle";
 
 const ApproveClaimList = () => {
-    const { cContract, setIsLoading, ownerAddress, isConnected, web3 } = useAppContext();
+    const { cContract, setIsLoading, ownerAddress, isConnected, web3, updated, setUpdated } = useAppContext();
 
     const [requestedList, setRequestedList] = useState([]);
     const [csvData, setCsvData] = useState([]);
     const [claimHash, setClaimHash] = useState('');
+    const [createdBy, setCreatedBy] = useState('');
     const csvLink = useRef() // setup the ref that we'll use for the hidden CsvLink click once we've updated the data
 
     useEffect(() => {
@@ -20,7 +21,8 @@ const ApproveClaimList = () => {
         if (list && list.length) {
             setRequestedList(list);
         }
-    }, []);
+        else setRequestedList([]);
+    }, [updated]);
 
     useEffect(() => {
         if(cContract) getClaimListRequest(); // eslint-disable-next-line
@@ -31,26 +33,28 @@ const ApproveClaimList = () => {
         try {
             await cContract.methods.approveClaimListRequest().send({ from: ownerAddress });
             NotificationManager.success('Approve successfully!', 'Success');
+            window.localStorage.removeItem('claim-list');
         } catch(err) {
             console.log(err);
             NotificationManager.error('Approve failure!', 'Failure');
         }
-        window.localStorage.removeItem('claim-list');
         setIsLoading(false);
+        setUpdated(!updated);
         await getLiveRefList();
     }
 
     const clearClaim = async() => {
-        window.localStorage.removeItem('claim-list');
         setIsLoading(true);
         try {
             await cContract.methods.declineClaimListRequest().send({ from: ownerAddress });
             NotificationManager.info('Cleared reflections successfully!', 'Success');
+            window.localStorage.removeItem('claim-list');
         } catch {
             NotificationManager.error('Clearing reflections successfully!', 'Failure');
         }
 
         setIsLoading(false);
+        setUpdated(!updated);
         await getLiveRefList();
     }
 
@@ -77,16 +81,29 @@ const ApproveClaimList = () => {
 
     const getClaimListRequest = async() => {
         const request = await cContract.methods.claimRootRequest().call();
-        if (request.isActive) setClaimHash(request.root);
+        if (request.isActive) {
+            setClaimHash(request.root);
+            setCreatedBy(request.createdBy);
+        }
     }
 
     return (
         <div className="container">
             <SectionTitle title="Approve Reflections Claim List"/>
+            {
+                createdBy ? (
+                    <div>
+                        <strong>Created By: </strong>
+                        <span className="btn border">{ createdBy }</span>
+                    </div>
+                ) : ""
+            }
+
             <div>
                 <strong>Pending Claim Request: </strong>
                 <span className="btn border">{ claimHash ? claimHash : "No pending request" }</span>
             </div>
+
             <div className="my-5" style={{ maxHeight: "500px", overflow: "auto"}}>
                 <table className="table upload-data">
                     <thead className='thead-dark'>

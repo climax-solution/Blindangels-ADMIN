@@ -9,7 +9,7 @@ import SectionTitle from "../sectionTitle";
 
 const UploadClaim = () => {
 
-    const { web3, cContract, isConnected, ownerAddress, setIsLoading } = useAppContext();
+    const { web3, cContract, isConnected, ownerAddress, setIsLoading, updated, setUpdated } = useAppContext();
 
     const [reflectionList, setReflectionList] = useState([]);
     const [week, setWeek] = useState('');
@@ -80,6 +80,7 @@ const UploadClaim = () => {
                 else NotificationManager.error("Transaction is failed", "Failed");
             }
         }
+        setUpdated(!updated);
         // setRequestedList(reflectionList);
         setReflectionList([]);
         setIsLoading(false);
