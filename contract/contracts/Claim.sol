@@ -53,8 +53,6 @@ contract BlindAngelClaim is Ownable {
 
     address private last_creator;
     bool public frozen;
-    bool private isApproved;
-    bool private updatedClaimList;
     uint256 public week;
 
     WithdrawStruct public withdrawRequest;
@@ -87,7 +85,7 @@ contract BlindAngelClaim is Ownable {
     function claim(uint256 index, uint256 amount, bytes32[] calldata merkleProof, uint256 _week) external onlyNFTOwner {
         require(week == _week, "claim is not available for this week");
         require(!claimed[msg.sender][week], "caller already claimed reward");
-        require(!frozen && isApproved, "claim is locked");
+        require(!frozen, "claim is locked");
 
         bytes32 node = keccak256(abi.encodePacked(index, msg.sender, amount, week));
 
@@ -117,7 +115,8 @@ contract BlindAngelClaim is Ownable {
         require(claimRootRequest.isActive, "request is not created");
 
         claimMerkleRoot = claimRootRequest.root;
-
+        delete claimRootRequest;
+        
         emit ApprovedClaimList(msg.sender);
     }
 
