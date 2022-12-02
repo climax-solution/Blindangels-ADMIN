@@ -254,19 +254,21 @@ const Lawis = () => {
                                 contract={cContract}
                             />
 
+                            <Freeze/>
+
+                            <Week/>
+
                             <UploadClaim
                                 web3={web3}
                             />
 
+
                             <ApproveClaimList
                                 cContract={cContract}
                             />
-
+                            
                             <ClaimHistory/>
 
-                            <Week/>
-
-                            <Freeze/>
                         </div>
                     </Tab.Pane>
                 </Tab.Content>
