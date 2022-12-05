@@ -26,7 +26,7 @@ const ApproveClaimList = () => {
 
     useEffect(() => {
         if(cContract) getClaimListRequest(); // eslint-disable-next-line
-    }, [cContract])
+    }, [cContract, updated])
 
     const approveClaimList = async() => {
         setIsLoading(true);
@@ -72,12 +72,12 @@ const ApproveClaimList = () => {
         ];
         requestedList.map((item, index) => {
             const proof = merkleTree.getHexProof(elements[index]);
-            if (proof.length == 1) _csvData.push([item.account, `[${proof[0]}]`]);
+            if (proof.length === 1) _csvData.push([item.account, `[${proof[0]}]`]);
 
             if (proof.length > 1) {
                 _csvData.push([item.account, `[${proof[0]}`]);
                 for (let i = 1; i < proof.length; i ++) {
-                    if (i == proof.length - 1) _csvData.push(["", proof[i]]);
+                    if (i === proof.length - 1) _csvData.push(["", proof[i]]);
                     else _csvData.push(["", `${proof[i]}]`]);
                 }
             }
@@ -108,7 +108,7 @@ const ApproveClaimList = () => {
                 ) : ""
             }
 
-            <div>
+            <div className="mt-3">
                 <strong>Pending Claim Request: </strong>
                 <span className="btn border">{ claimHash ? claimHash : "No pending request" }</span>
             </div>

@@ -30,8 +30,17 @@ export const AppWrapper = ({ children }) => {
             setInTreasuryContract(_inTreasury);
             setOutTreasuryContract(_outTreasury);
             setWEB3(_web3);
+            
+            if (window.ethereum) {
+                const provider = window.ethereum;
+
+                provider
+                .on("accountsChanged", (accounts) => {
+                    setOwnerAddress(accounts[0]);
+                })
+            }
         }
-    }, [])
+    }, []);
 
     const context = {
         web3,

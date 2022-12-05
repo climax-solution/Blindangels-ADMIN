@@ -62,15 +62,20 @@ const Lawis = () => {
         }
     }
     
+    const disconnectWallet = () => {
+        setIsConnected(false);
+        setOwnerAddress('');
+    }
+
     return (
         <>
             <NotificationContainer/>
             { isLoading && <Loading/> }
             <div className="container d-flex justify-content-end mt-3">
-                <button type="button" className="btn btn-success mb-1" id="wallet-connect" onClick={walletConnect}>
+                <button type="button" className="btn btn-success mb-1" id="wallet-connect" onClick={ isConnected ? disconnectWallet : walletConnect}>
                     {
                         isConnected
-                            ? ownerAddress.substr(0, 6) + '...' + ownerAddress.substr(-4)
+                            ? 'Disconnect( ' + ownerAddress.substr(0, 6) + '...' + ownerAddress.substr(-4) + ' )'
                             : "Connect Wallet"
                     }
                 </button>
@@ -261,7 +266,6 @@ const Lawis = () => {
                             <UploadClaim
                                 web3={web3}
                             />
-
 
                             <ApproveClaimList
                                 cContract={cContract}
