@@ -68,19 +68,11 @@ const ApproveClaimList = () => {
         const elements = requestedList.map((x, idx) => utils.solidityKeccak256(["uint256","address", "uint256", "uint256"], [idx + 1, x.account, web3.utils.toWei(x.balance, 'ether'), week]));
         const merkleTree = new MerkleTree(elements, keccak256, { sort: true });
         let _csvData = [
-            ["account", "proofs"],
+            ["account", "proofs", "merkle_root"],
         ];
         requestedList.map((item, index) => {
             const proof = merkleTree.getHexProof(elements[index]);
-            if (proof.length === 1) _csvData.push([item.account, `[${proof[0]}]`]);
-
-            if (proof.length > 1) {
-                _csvData.push([item.account, `[${proof[0]}`]);
-                for (let i = 1; i < proof.length; i ++) {
-                    if (i === proof.length - 1) _csvData.push(["", proof[i]]);
-                    else _csvData.push(["", `${proof[i]}]`]);
-                }
-            }
+            _csvData.push([item.account, `[${proof}]`, merkleTree.getHexRoot()]);
 
             return item;
         });
