@@ -14,6 +14,7 @@ import Freeze from './components/Freeze/freez';
 import { Nav, Tab } from 'react-bootstrap';
 import Deposit from './components/Deposit/deposit.js';
 import ManageSigner from './components/ManageSigner/manageSigner.js';
+import Web3 from 'web3';
 
 const { inboundTreasuryAddress, outboundTreasuryAddress, claimAddress } = config;
 const Lawis = () => {
@@ -48,17 +49,30 @@ const Lawis = () => {
     }, [web3, activeTab]);
 
     const walletConnect = async() => {
-        if (web3) {
+        try {
             if (!window.ethereum) {
                 NotificationManager.warning("Metamask is not installed", "Warning");
                 return;
             } else {
+
                 const res = await window.ethereum.enable();
+                const web3 = new Web3(window.ethereum);
+                const chainId = await web3.eth.getChainId();
+
+                if (chainId != 5) {
+                    await window.ethereum.request({
+                        method: "wallet_switchEthereumChain",
+                        params: [{ chainId: web3.utils.toHex(5) }]
+                    })
+                }
+                
                 if (res.length) {
                     setIsConnected(true);
                     setOwnerAddress(res[0]);
                 }
             }
+        } catch(err) {
+
         }
     }
     
@@ -271,7 +285,7 @@ const Lawis = () => {
                                 cContract={cContract}
                             />
                             
-                            <ClaimHistory/>
+                            <ClaimHistory address={claimAddress}/>
 
                         </div>
                     </Tab.Pane>

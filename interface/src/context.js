@@ -19,8 +19,8 @@ export const AppWrapper = ({ children }) => {
     const [activeTab, setActiveTab] = useState("inbound");
     const [updated, setUpdated] = useState(false);
 
-    useEffect(() => {
-        const _web3 = getWeb3();
+    useEffect(async() => {
+        const _web3 = await getWeb3();
         if (_web3) {
             const _inTreasury = new _web3.eth.Contract(treasuryAbi, inboundTreasuryAddress);
             const _outTreasury = new _web3.eth.Contract(treasuryAbi, outboundTreasuryAddress);
@@ -38,9 +38,12 @@ export const AppWrapper = ({ children }) => {
                 .on("accountsChanged", (accounts) => {
                     setOwnerAddress(accounts[0]);
                 })
+                .on("chainChanged", () => {
+                    window.location.reload();
+                })
             }
         }
-    }, []);
+    }, []); // eslint-disable-next-line
 
     const context = {
         web3,

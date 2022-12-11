@@ -1,11 +1,58 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppContext } from "../../../context";
-import ReflectionHistory from "../refHistory";
 import SectionTitle from "../sectionTitle";
+import config from "../../../config.json";
+import axios from "axios";
 
-const ClaimHistory = () => {
+const { bitqueryKey } = config;
+
+const ClaimHistory = ({ address }) => {
     const { web3 } = useAppContext();
-    const [transferedList, /*setTransferedList*/] = useState([]);
+    const [claimedList, setClaimedList] = useState([]);
+
+    useEffect(() => {
+        async function fetchHistory() {
+            const query = `
+                query{
+                    ethereum(network: goerli) {
+                        smartContractEvents(
+                            smartContractAddress: {is: "${address}"}
+                            smartContractEvent: {is: "Claimed"}
+                            options: {desc: "block.height", limit: 10}
+                        ) {
+                            block {
+                                height
+                            }
+                            arguments {
+                                value
+                                argument
+                            }
+                        }
+                    }            
+                }
+            `;
+            await axios.post(
+                "https://graphql.bitquery.io/",
+                {
+                    query
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-API-KEY": bitqueryKey
+                    },
+                }
+            ).then(res => {
+                const { data } = res.data;
+                setClaimedList(data.ethereum.smartContractEvents);
+            }).catch(err => {
+                setClaimedList([]);
+            });
+
+        }
+
+        fetchHistory();
+    }, [])
 
     return (
         <div className="container mb-5 mt-10">
@@ -16,27 +63,26 @@ const ClaimHistory = () => {
                         <tr>
                             <th>#</th>
                             {/* <th>From</th> */}
-                            <th>To</th>
-                            <th>Dealer</th>
+                            <th>Wallet Address</th>
                             <th>Value</th>
-                            <th>Category</th>
+                            <th>Week</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
-                            transferedList.map((item, idx) => {
+                            claimedList.map((item, idx) => {
                                 return (
-                                    <ReflectionHistory
-                                        key={idx + 1}
-                                        idx={idx}
-                                        tx={item}
-                                        web3={web3}
-                                    />
+                                    <tr key={idx}>
+                                        <td>{ idx + 1}</td>
+                                        <td>{item.arguments[0].value}</td>
+                                        <td>{web3.utils.fromWei(item.arguments[1].value, "ether")}</td>
+                                        <td>{item.arguments[2].value}</td>
+                                    </tr>
                                 )
                             })
                         }
                         {
-                            !transferedList.length && 
+                            !claimedList.length && 
                             <tr>
                                 <td colSpan={5} className="text-center">No requested</td>
                             </tr>

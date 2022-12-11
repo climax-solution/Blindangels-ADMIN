@@ -53,7 +53,7 @@ const TransferHistory = ({ address }) => {
             setLastTransfersTreasury(data.ethereum.smartContractEvents);
         }).catch(err => {
             setLastTransfersTreasury([]);
-        })
+        });
     }
 
     return (
