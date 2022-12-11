@@ -48,11 +48,11 @@ const ClaimHistory = ({ address }) => {
             }).catch(err => {
                 setClaimedList([]);
             });
-
         }
 
-        fetchHistory();
-    }, [])
+        if (address) fetchHistory();
+
+    }, [address]) 
 
     return (
         <div className="container mb-5 mt-10">
