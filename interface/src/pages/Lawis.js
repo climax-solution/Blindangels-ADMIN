@@ -59,7 +59,7 @@ const Lawis = () => {
                 const web3 = new Web3(window.ethereum);
                 const chainId = await web3.eth.getChainId();
 
-                if (chainId != 5) {
+                if (chainId !== 5) {
                     await window.ethereum.request({
                         method: "wallet_switchEthereumChain",
                         params: [{ chainId: web3.utils.toHex(5) }]

@@ -19,31 +19,35 @@ export const AppWrapper = ({ children }) => {
     const [activeTab, setActiveTab] = useState("inbound");
     const [updated, setUpdated] = useState(false);
 
-    useEffect(async() => {
-        const _web3 = await getWeb3();
-        if (_web3) {
-            const _inTreasury = new _web3.eth.Contract(treasuryAbi, inboundTreasuryAddress);
-            const _outTreasury = new _web3.eth.Contract(treasuryAbi, outboundTreasuryAddress);
-            const _Claim = new _web3.eth.Contract(claimAbi, claimAddress);
+    useEffect(() => {
+        async function init() {
+            const _web3 = await getWeb3();
+            if (_web3) {
+                const _inTreasury = new _web3.eth.Contract(treasuryAbi, inboundTreasuryAddress);
+                const _outTreasury = new _web3.eth.Contract(treasuryAbi, outboundTreasuryAddress);
+                const _Claim = new _web3.eth.Contract(claimAbi, claimAddress);
 
-            setClaimContract(_Claim);
-            setInTreasuryContract(_inTreasury);
-            setOutTreasuryContract(_outTreasury);
-            setWEB3(_web3);
-            
-            if (window.ethereum) {
-                const provider = window.ethereum;
+                setClaimContract(_Claim);
+                setInTreasuryContract(_inTreasury);
+                setOutTreasuryContract(_outTreasury);
+                setWEB3(_web3);
+                
+                if (window.ethereum) {
+                    const provider = window.ethereum;
 
-                provider
-                .on("accountsChanged", (accounts) => {
-                    setOwnerAddress(accounts[0]);
-                })
-                .on("chainChanged", () => {
-                    window.location.reload();
-                })
+                    provider
+                    .on("accountsChanged", (accounts) => {
+                        setOwnerAddress(accounts[0]);
+                    })
+                    .on("chainChanged", () => {
+                        window.location.reload();
+                    })
+                }
             }
         }
-    }, []); // eslint-disable-next-line
+
+        init();
+    }, []);
 
     const context = {
         web3,
