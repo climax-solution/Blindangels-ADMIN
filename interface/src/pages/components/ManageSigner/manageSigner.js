@@ -87,7 +87,7 @@ const ManageSigner = ({ contract }) => {
                 .on('receipt', async () => {
                     NotificationManager.success("Sent successfully!", "Success");
                 });
-
+            await getLatestItem();
         } catch (err) {
             console.log(err);
             NotificationManager.error("Transaction is failed!", "Failed");
