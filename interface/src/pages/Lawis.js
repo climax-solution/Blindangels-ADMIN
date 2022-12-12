@@ -30,7 +30,8 @@ const Lawis = () => {
         activeTab,
         setOwnerAddress,
         setIsConnected,
-        setActiveTab
+        setActiveTab,
+        updated
     } = useAppContext();
 
     const [treasuryBalance, setTreasuryBalance] = useState('Loading...');
@@ -46,7 +47,7 @@ const Lawis = () => {
             setClaimWalletBalance(web3.utils.fromWei(CBalance, 'ether'));
         }
         if (web3) initSetting();
-    }, [web3, activeTab]);
+    }, [web3, activeTab, updated]);
 
     const walletConnect = async() => {
         try {
