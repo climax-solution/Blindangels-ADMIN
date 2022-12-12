@@ -38,14 +38,14 @@ const Lawis = () => {
     const [unClaimedBalance] = useState('Loading...');
 
     useEffect(() => {
-        async function initalSetting() {
-            const TBalance = await web3.eth.getBalance(activeTab === 'inbound' ? inboundTreasuryAddress : outboundTreasuryAddress);
+        async function initSetting() {
+            const TBalance = await web3.eth.getBalance(activeTab === 'outbound' ? outboundTreasuryAddress : inboundTreasuryAddress);
             const CBalance = await web3.eth.getBalance(claimAddress);
     
             setTreasuryBalance(web3.utils.fromWei(TBalance, 'ether'));
             setClaimWalletBalance(web3.utils.fromWei(CBalance, 'ether'));
         }
-        if (web3) initalSetting();
+        if (web3) initSetting();
     }, [web3, activeTab]);
 
     const walletConnect = async() => {
@@ -105,7 +105,7 @@ const Lawis = () => {
                                     Treasury address
                                 </h5>
                                 <div className="card-text" id="tokenAddress">
-                                    {activeTab === 'inbound' ? inboundTreasuryAddress : outboundTreasuryAddress}
+                                    {activeTab === 'outbound' ? outboundTreasuryAddress : inboundTreasuryAddress}
                                 </div>
                             </div>
                         </div>

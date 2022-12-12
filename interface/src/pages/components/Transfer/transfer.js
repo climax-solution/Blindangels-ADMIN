@@ -5,7 +5,7 @@ import SectionTitle from "../sectionTitle";
 
 const CreateTransfer = ({ contract }) => {
 
-    const { web3, isConnected, ownerAddress, setIsLoading } = useAppContext();
+    const { web3, isConnected, ownerAddress, setIsLoading, updated, setUpdated } = useAppContext();
 
     const [transferAddress, setTransferAddress] = useState('');
     const [transferAmount, setTransferAmount] = useState('');
@@ -84,6 +84,7 @@ const CreateTransfer = ({ contract }) => {
             NotificationManager.error("Transaction is failed!", "Failed");
         }
         setIsLoading(false);
+        setUpdated(!updated);
         await getLatestItem();
         // await getTransferHistory();
         // await initalSetting();
@@ -202,7 +203,7 @@ const CreateTransfer = ({ contract }) => {
                                         onChange={(e) => setTransferAddress(e.target.value)}
                                     />
                                 </div>
-                                <label htmlFor="createTransferTokens">Tokens (without decimals)</label>
+                                <label htmlFor="createTransferTokens">Tokens (ETH)</label>
                                 <div className="input-group mb-3">
                                     <input
                                         type="number"
@@ -239,7 +240,7 @@ const CreateTransfer = ({ contract }) => {
                                         readOnly
                                     />
                                 </div>
-                                <label htmlFor="createTransferTokens">Tokens (without decimals)</label>
+                                <label htmlFor="createTransferTokens">Tokens (ETH)</label>
                                 <div className="input-group mb-3">
                                     <input
                                         type="number"

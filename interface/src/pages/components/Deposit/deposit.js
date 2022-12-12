@@ -5,7 +5,7 @@ import SectionTitle from "../sectionTitle";
 
 const Deposit = ({ contract }) => {
 
-    const { web3, isConnected, ownerAddress, setIsLoading } = useAppContext();
+    const { web3, isConnected, ownerAddress, setIsLoading, updated, setUpdated } = useAppContext();
     const [fund, setFund] = useState('');
 
     const deposit = async() => {
@@ -33,6 +33,7 @@ const Deposit = ({ contract }) => {
                 from: ownerAddress,
                 value: amount
             });
+            setUpdated(!updated);
             NotificationManager.success("Deposited successfully");
         } catch(err) {
             console.log(err);
