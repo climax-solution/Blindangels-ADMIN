@@ -35,12 +35,13 @@ contract BlindAngelClaim is Ownable {
     struct ClaimRootRequest {
         address createdBy;
         bytes32 root;
+        uint256 totalClaimAmount;
         bool isActive;
     }
 
     event Claimed(address indexed from, uint256 indexed amount, uint256 week);
     event UpdatedClaimList(address indexed updator, bytes32 root_);
-    event ApprovedClaimList(address indexed dealer);
+    event ApprovedClaimList(address indexed dealer, bytes32 oldClaimRoot, bytes32 newClaimRoot, uint256 claimedAmount, uint256 unclaimedAmount);
     event DeclinedClaimList(address indexed dealer);
     event Deposit(address indexed dealer, uint256 amount);
     event AddSigner(address indexed dealer, address indexed creator, address signer);
@@ -54,6 +55,8 @@ contract BlindAngelClaim is Ownable {
     address private last_creator;
     bool public frozen;
     uint256 public week;
+    uint256 public totalClaimAmount;
+    uint256 public totalClaimedAmount;
 
     WithdrawStruct public withdrawRequest;
     SignerRequest public signerRequest;
@@ -98,13 +101,15 @@ contract BlindAngelClaim is Ownable {
         require(sent, "Failure! Not withdraw");
 
         claimed[msg.sender][week] = true;
+        totalClaimedAmount += amount;
+
         emit Claimed(msg.sender, amount, week);
     }
 
-    function newClaimListRequest(bytes32 root_) external onlySigners {
+    function newClaimListRequest(bytes32 root_, uint256 totalClaimAmount_) external onlySigners {
         require(frozen);
 
-        claimRootRequest = ClaimRootRequest(msg.sender, root_, true);
+        claimRootRequest = ClaimRootRequest(msg.sender, root_, totalClaimAmount_, true);
         
         emit UpdatedClaimList(msg.sender, root_);
     }
@@ -114,10 +119,13 @@ contract BlindAngelClaim is Ownable {
         require(claimRootRequest.createdBy != msg.sender, "caller is not available to approve");
         require(claimRootRequest.isActive, "request is not created");
 
+        emit ApprovedClaimList(msg.sender, claimMerkleRoot, claimRootRequest.root, totalClaimAmount, totalClaimAmount - totalClaimedAmount);
+
         claimMerkleRoot = claimRootRequest.root;
+        totalClaimAmount = claimRootRequest.totalClaimAmount;
+        totalClaimedAmount = 0;
+
         delete claimRootRequest;
-        
-        emit ApprovedClaimList(msg.sender);
     }
 
     function declineClaimListRequest() external onlySigners {
@@ -130,7 +138,6 @@ contract BlindAngelClaim is Ownable {
 
     function clearClaimList() external onlySigners {
         delete claimMerkleRoot;
-        frozen = false;
     }
 
     function freeze() external onlySigners {
