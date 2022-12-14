@@ -3,6 +3,7 @@ import { useAppContext } from "../../../context";
 import SectionTitle from "../sectionTitle";
 import config from "../../../config.json";
 import axios from "axios";
+import Time from "../../time";
 
 const { bitqueryKey } = config;
 
@@ -26,6 +27,9 @@ const ClaimHistory = ({ address }) => {
                             arguments {
                                 value
                                 argument
+                            }
+                            transaction {
+                                hash
                             }
                         }
                     }            
@@ -63,20 +67,24 @@ const ClaimHistory = ({ address }) => {
                         <tr>
                             <th>#</th>
                             {/* <th>From</th> */}
+                            <th>Tx ID</th>
                             <th>Wallet Address</th>
                             <th>Value</th>
                             <th>Week</th>
+                            <th>Date & Time</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
-                            claimedList.map((item, idx) => {
+                            claimedList.map(({arguments: arg, transaction: tx, block}, idx) => {
                                 return (
                                     <tr key={idx}>
                                         <td>{ idx + 1}</td>
-                                        <td>{item.arguments[0].value}</td>
-                                        <td>{web3.utils.fromWei(item.arguments[1].value, "ether")}</td>
-                                        <td>{item.arguments[2].value}</td>
+                                        <td>{ tx.hash }</td>
+                                        <td><a href={`https://goerli.etherscan.io/address/${arg[0].value}`} target="_blank" rel="noreferrer">{arg[0].value.slice(0, 6) + '...' + arg[0].value.slice(-4)}</a></td>
+                                        <td>{web3.utils.fromWei(arg[1].value, "ether")}</td>
+                                        <td>{arg[2].value}</td>
+                                        <Time blockNumber={block.height}/>
                                     </tr>
                                 )
                             })
@@ -84,7 +92,7 @@ const ClaimHistory = ({ address }) => {
                         {
                             !claimedList.length && 
                             <tr>
-                                <td colSpan={5} className="text-center">No requested</td>
+                                <td colSpan={7} className="text-center">No requested</td>
                             </tr>
                         }
                     </tbody>

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useAppContext } from "../../../context";
 import SectionTitle from "../sectionTitle";
 import config from "../../../config.json";
+import Time from "../../time";
 
 const { bitqueryKey } = config;
 
@@ -33,6 +34,9 @@ const TransferHistory = ({ address }) => {
                             value
                             argument
                         }
+                        transaction {
+                            hash
+                        }
                     }
                 }            
             }
@@ -50,6 +54,7 @@ const TransferHistory = ({ address }) => {
             }
         ).then(res => {
             const { data } = res.data;
+            console.log(res.data);
             setLastTransfersTreasury(data.ethereum.smartContractEvents);
         }).catch(err => {
             setLastTransfersTreasury([]);
@@ -64,22 +69,26 @@ const TransferHistory = ({ address }) => {
                     <thead className='thead-dark'>
                         <tr>
                             <th>#</th>
+                            <th>Tx ID</th>
                             <th>Creator</th>
                             <th>To</th>
                             <th>Dealer</th>
                             <th>Value</th>
+                            <th style={{ width: "250px" }}>Date & Time</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
-                            lastTransfersTreasury.map(({ arguments: item}, idx) => {
+                            lastTransfersTreasury.map(({ arguments: item, transaction: tx, block}, idx) => {
                                 return (
                                     <tr key={idx}>
                                         <td>{idx + 1}</td>
-                                        <td>{item[0].value}</td>
-                                        <td>{item[2].value}</td>
-                                        <td>{item[1].value}</td>
+                                        <td><a href={`https://goerli.etherscan.io/tx/${tx.hash}`} target="_blank" rel="noreferrer">{tx.hash.slice(0, 6) + '...' + tx.hash.slice(-4)}</a></td>
+                                        <td><a href={`https://goerli.etherscan.io/address/${item[0].value}`} target="_blank" rel="noreferrer">{item[0].value.slice(0, 6) + '...' + item[0].value.slice(-4)}</a></td>
+                                        <td><a href={`https://goerli.etherscan.io/address/${item[2].value}`} target="_blank" rel="noreferrer">{item[2].value.slice(0, 6) + '...' + item[2].value.slice(-4)}</a></td>
+                                        <td><a href={`https://goerli.etherscan.io/address/${item[1].value}`} target="_blank" rel="noreferrer">{item[1].value.slice(0, 6) + '...' + item[1].value.slice(-4)}</a></td>
                                         <td>{web3.utils.fromWei(item[3].value, "ether")}</td>
+                                        <Time blockNumber={block.height}/>
                                     </tr>
                                 )
                             })
@@ -87,7 +96,7 @@ const TransferHistory = ({ address }) => {
                         {
                             !lastTransfersTreasury.length && 
                             <tr>
-                                <td colSpan={5} className="text-center">No requested</td>
+                                <td colSpan={7} className="text-center">No requested</td>
                             </tr>
                         }
                     </tbody>
