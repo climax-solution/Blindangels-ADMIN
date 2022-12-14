@@ -6,7 +6,7 @@ import SectionTitle from "../sectionTitle";
 
 const ManageSigner = ({ contract }) => {
 
-    const { web3, isConnected, ownerAddress, setIsLoading } = useAppContext();
+    const { web3, isConnected, ownerAddress, setIsLoading, updated, setUpdated } = useAppContext();
 
     const [signerAddress, setSignerAddress] = useState('');
     const [signerRequest, setSignerRequest] = useState('');
@@ -51,6 +51,7 @@ const ManageSigner = ({ contract }) => {
                     setIsLoading(false);
 
                 });
+            setUpdated(!updated);
         }
         catch (err) {
             if (err?.code !== 4001) {
@@ -87,6 +88,7 @@ const ManageSigner = ({ contract }) => {
                 .on('receipt', async () => {
                     NotificationManager.success("Sent successfully!", "Success");
                 });
+            setUpdated(!updated);
             await getLatestItem();
         } catch (err) {
             console.log(err);
@@ -118,6 +120,7 @@ const ManageSigner = ({ contract }) => {
                 .catch(err => {
                     console.log(err);
                 })
+            setUpdated(!updated);
 
         } catch (err) {
             if (err.code !== 4001) {
