@@ -37,6 +37,8 @@ const UploadClaim = () => {
         } catch(err) {
             console.log(err);
         }
+
+        e.target.value = null;
     }
     
     const updateClaimList = async() => {
