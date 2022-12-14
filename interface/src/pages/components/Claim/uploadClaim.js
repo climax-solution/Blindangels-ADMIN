@@ -63,12 +63,16 @@ const UploadClaim = () => {
                 ])
             }
 
-            const elements = reflectionList.map((x, idx) => utils.solidityKeccak256(["uint256","address", "uint256", "uint256"], [idx + 1, x.account, web3.utils.toWei(x.balance, 'ether'), week]));
+            let totalAmount = 0;
+            const elements = reflectionList.map((x, idx) => {
+                totalAmount += +x.amount;
+                return utils.solidityKeccak256(["uint256","address", "uint256", "uint256"], [idx + 1, x.account, web3.utils.toWei(x.balance, 'ether'), week]);
+            });
             const merkleTree = new MerkleTree(elements, keccak256, { sort: true });
             const root = merkleTree.getHexRoot();
-            await cContract.methods.newClaimListRequest(root)
+            await cContract.methods.newClaimListRequest(root, web3.utils.toWei(totalAmount.toString(), 'ether'))
             .send({ from : ownerAddress })
-            .on('receipt', (res) => {
+            .on('receipt', () => {
                 NotificationManager.success("Upload successfully!", "Success");
                 const list = JSON.stringify(reflectionList);
                 window.localStorage.setItem('claim-list', list);

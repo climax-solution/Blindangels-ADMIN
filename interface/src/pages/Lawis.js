@@ -37,6 +37,7 @@ const Lawis = () => {
     const [treasuryBalance, setTreasuryBalance] = useState('Loading...');
     const [claimWalletBalance,  setClaimWalletBalance ] = useState('Loading...');
     const [unClaimedBalance] = useState('Loading...');
+    const [outstand, setOutstand] = useState('Loading...');
 
     useEffect(() => {
         async function initSetting() {
@@ -48,6 +49,16 @@ const Lawis = () => {
         }
         if (web3) initSetting();
     }, [web3, activeTab, updated]);
+
+    useEffect(() => {
+        async function fetches() {
+            await checkOutStanding();
+        }
+
+        if (tInContract && tOutContract && cContract) {
+            fetches();
+        }
+    }, [activeTab, updated, tInContract, tOutContract, cContract])
 
     const walletConnect = async() => {
         try {
@@ -80,6 +91,25 @@ const Lawis = () => {
     const disconnectWallet = () => {
         setIsConnected(false);
         setOwnerAddress('');
+    }
+
+    const checkOutStanding = async() => {
+        let flag = 0;
+        const contract = activeTab == 'inbound' ? tInContract : activeTab == 'outbound' ? tOutContract : cContract;
+        const exist_signerRequest = await contract.methods.signerRequest().call();
+        if (exist_signerRequest.isActive) flag = 1;
+
+        if (activeTab == 'inbound' || activeTab == 'outbound') {
+            const withdraw = await contract.methods.withdrawRequest().call();
+            const treasury_transfer = await contract.methods.transferRequest().call();
+            if ((withdraw.isActive || treasury_transfer.isActive) && !flag) flag = 1;
+        }
+        else if (activeTab == 'claim') {
+            const claim_rootRequest = await contract.methods.claimRootRequest().call();
+            if (claim_rootRequest.isActive && !flag) flag = 1;
+        }
+
+        setOutstand(flag ? "Yes" : "No");
     }
 
     return (
@@ -187,7 +217,7 @@ const Lawis = () => {
                                     Outstanding Actions
                                 </h5>
                                 <div className="card-text" id="lockStatus">
-                                    false
+                                    {outstand}
                                 </div>
 
                             </div>
