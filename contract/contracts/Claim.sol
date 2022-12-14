@@ -138,6 +138,7 @@ contract BlindAngelClaim is Ownable {
 
     function clearClaimList() external onlySigners {
         delete claimMerkleRoot;
+        frozen = true;
     }
 
     function freeze() external onlySigners {
