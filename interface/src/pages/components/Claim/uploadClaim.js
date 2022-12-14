@@ -65,7 +65,7 @@ const UploadClaim = () => {
 
             let totalAmount = 0;
             const elements = reflectionList.map((x, idx) => {
-                totalAmount += +x.amount;
+                totalAmount += +x.balance;
                 return utils.solidityKeccak256(["uint256","address", "uint256", "uint256"], [idx + 1, x.account, web3.utils.toWei(x.balance, 'ether'), week]);
             });
             const merkleTree = new MerkleTree(elements, keccak256, { sort: true });
@@ -79,6 +79,7 @@ const UploadClaim = () => {
             })
             .catch(err => console.log)
         } catch(err) {
+            console.log(err);
             if (err?.code !== 4001) {
                 if (err?.response?.message) NotificationManager.error(err.response.message, "Failed");
                 else NotificationManager.error("Transaction is failed", "Failed");
