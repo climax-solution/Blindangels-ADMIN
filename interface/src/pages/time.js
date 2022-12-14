@@ -23,7 +23,7 @@ const Time = ({ blockNumber }) => {
     }, [blockNumber, web3])
 
     return (
-        <td>{ isLoading ? "Loading..." : time }</td>
+        <td style={{ width: "250px" }} className="d-inline-block">{ isLoading ? "Loading..." : time }</td>
     )
 }
 
