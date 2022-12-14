@@ -84,9 +84,9 @@ const TransferHistory = ({ address }) => {
                                     <tr key={idx}>
                                         <td>{idx + 1}</td>
                                         <td><a href={`https://goerli.etherscan.io/tx/${tx.hash}`} target="_blank" rel="noreferrer">{tx.hash}</a></td>
-                                        <td><a href={`https://goerli.etherscan.io/address/${item[0].value}`} target="_blank" rel="noreferrer">{item[0].value.slice(0, 6) + '...' + item[0].value.slice(-4)}</a></td>
-                                        <td><a href={`https://goerli.etherscan.io/address/${item[2].value}`} target="_blank" rel="noreferrer">{item[2].value.slice(0, 6) + '...' + item[2].value.slice(-4)}</a></td>
-                                        <td><a href={`https://goerli.etherscan.io/address/${item[1].value}`} target="_blank" rel="noreferrer">{item[1].value.slice(0, 6) + '...' + item[1].value.slice(-4)}</a></td>
+                                        <td><a href={`https://goerli.etherscan.io/address/${item[0].value}`} target="_blank" rel="noreferrer">{item[0].value}</a></td>
+                                        <td><a href={`https://goerli.etherscan.io/address/${item[2].value}`} target="_blank" rel="noreferrer">{item[2].value}</a></td>
+                                        <td><a href={`https://goerli.etherscan.io/address/${item[1].value}`} target="_blank" rel="noreferrer">{item[1].value}</a></td>
                                         <td>{web3.utils.fromWei(item[3].value, "ether")}</td>
                                         <Time blockNumber={block.height}/>
                                     </tr>
