@@ -51,20 +51,16 @@ const Lawis = () => {
     }, [web3, activeTab, updated]);
 
     useEffect(() => {
-        async function fetches() {
-            /* eslint-disable */
-            await checkOutStanding();
-        }
-
         if (tInContract && tOutContract && cContract) {
-            fetches();
+            /* eslint-disable */
+            checkOutStanding();
         }
 
         if (web3 && cContract) {
             /* eslint-disable */
             getUnclaimedAmount();
         }
-    }, [activeTab, updated, tInContract, tOutContract, cContract])
+    }, [activeTab, updated, tInContract, tOutContract, cContract, web3])
 
     const walletConnect = async() => {
         try {
@@ -122,7 +118,8 @@ const Lawis = () => {
         const totalClaimAmount = await cContract.methods.totalClaimAmount().call();
         const claimedAmount = await cContract.methods.totalClaimedAmount().call();
         const rest = totalClaimAmount - claimedAmount;
-        setUnClaimedBalance(web3.utils.fromWei(rest, 'ether'));
+        console.log(rest);
+        setUnClaimedBalance(web3.utils.fromWei(rest.toString(), 'ether'));
     }
 
     return (
