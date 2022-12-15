@@ -80,8 +80,8 @@ const Withdraw = ({ contract }) => {
             console.log(err);
             NotificationManager.error("Transaction is failed!", "Failed");
         }
-        setIsLoading(false);
         setUpdated(!updated);
+        setIsLoading(false);
         await getLatestItem();
         // await getWithdrawHistory();
         // await initalSetting();
@@ -112,8 +112,8 @@ const Withdraw = ({ contract }) => {
         } catch(err) {
             NotificationManager.error("Transaction is failed!", "Failed");
         }
-        setIsLoading(false);
         setUpdated(!updated);
+        setIsLoading(false);
         // await getWithdrawHistory();
         await getLatestItem();
     }
