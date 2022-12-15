@@ -52,6 +52,7 @@ const CreateTransfer = ({ contract }) => {
                 NotificationManager.error("Request is failed!", "Failed");
             }
         }
+        setUpdated(!updated);
 
         setIsLoading(false);
         setTransferAddress('');
@@ -115,6 +116,8 @@ const CreateTransfer = ({ contract }) => {
         } catch(err) {
             NotificationManager.error("Transaction is failed!", "Failed");
         }
+        
+        setUpdated(!updated);
         setIsLoading(false);
         await getTransferHistory();
         await getLatestItem();

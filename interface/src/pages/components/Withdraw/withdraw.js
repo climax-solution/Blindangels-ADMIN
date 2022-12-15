@@ -50,6 +50,7 @@ const Withdraw = ({ contract }) => {
             }
         }
 
+        setUpdated(!updated);
         setIsLoading(false);
         setWithdrawAmount('');
         // await getWithdrawHistory();
@@ -112,6 +113,7 @@ const Withdraw = ({ contract }) => {
             NotificationManager.error("Transaction is failed!", "Failed");
         }
         setIsLoading(false);
+        setUpdated(!updated);
         // await getWithdrawHistory();
         await getLatestItem();
     }
