@@ -116,7 +116,7 @@ const CreateTransfer = ({ contract }) => {
         } catch(err) {
             NotificationManager.error("Transaction is failed!", "Failed");
         }
-        
+
         setUpdated(!updated);
         setIsLoading(false);
         await getTransferHistory();
@@ -249,7 +249,7 @@ const CreateTransfer = ({ contract }) => {
                                         type="number"
                                         className="form-control"
                                         id="createTransferTokens"
-                                        value={ transferRequest ? web3.utils.fromWei(transferRequest.value, 'ether') : '' }
+                                        value={ transferRequest ? web3 ? web3.utils.fromWei(transferRequest.value, 'ether') : '' : '' }
                                         readOnly
                                     />
                                 </div>

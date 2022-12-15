@@ -82,7 +82,7 @@ const ClaimHistory = ({ address }) => {
                                         <td>{ idx + 1}</td>
                                         <td><a href={`https://goerli.etherscan.io/address/${tx.hash}`} target="_blank" rel="noreferrer">{ tx.hash }</a></td>
                                         <td><a href={`https://goerli.etherscan.io/address/${arg[0].value}`} target="_blank" rel="noreferrer">{arg[0].value}</a></td>
-                                        <td>{web3.utils.fromWei(arg[1].value, "ether")}</td>
+                                        <td>{web3 ? web3.utils.fromWei(arg[1].value, "ether") : ""}</td>
                                         <td>{arg[2].value}</td>
                                         <Time blockNumber={block.height}/>
                                     </tr>

@@ -209,7 +209,7 @@ const Withdraw = ({ contract }) => {
                                         type="number"
                                         className="form-control"
                                         id="createWithdrawTokens"
-                                        value={ withdrawRequest ? web3.utils.fromWei(withdrawRequest.amount, 'ether') : '' }
+                                        value={ withdrawRequest ? web3 ? web3.utils.fromWei(withdrawRequest.amount, 'ether') : '' : '' }
                                         readOnly
                                     />
                                 </div>

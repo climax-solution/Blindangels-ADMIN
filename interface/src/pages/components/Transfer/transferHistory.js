@@ -87,7 +87,7 @@ const TransferHistory = ({ address }) => {
                                         <td><a href={`https://goerli.etherscan.io/address/${item[0].value}`} target="_blank" rel="noreferrer">{item[0].value}</a></td>
                                         <td><a href={`https://goerli.etherscan.io/address/${item[2].value}`} target="_blank" rel="noreferrer">{item[2].value}</a></td>
                                         <td><a href={`https://goerli.etherscan.io/address/${item[1].value}`} target="_blank" rel="noreferrer">{item[1].value}</a></td>
-                                        <td>{web3.utils.fromWei(item[3].value, "ether")}</td>
+                                        <td>{web3 ? web3.utils.fromWei(item[3].value, "ether") : ""}</td>
                                         <Time blockNumber={block.height}/>
                                     </tr>
                                 )
