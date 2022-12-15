@@ -53,6 +53,7 @@ const Lawis = () => {
     useEffect(() => {
         if (tInContract && tOutContract && cContract) {
             /* eslint-disable */
+            console.log('updatedupdated', updated);
             checkOutStanding();
         }
 
@@ -99,12 +100,12 @@ const Lawis = () => {
         let flag = 0;
         const contract = activeTab === 'inbound' ? tInContract : activeTab === 'outbound' ? tOutContract : cContract;
         const exist_signerRequest = await contract.methods.signerRequest().call();
-        if (exist_signerRequest.isActive) flag = 1;
+        const withdraw = await contract.methods.withdrawRequest().call();
+        if (exist_signerRequest.isActive || withdraw.isActive) flag = 1;
 
         if (activeTab === 'inbound' || activeTab === 'outbound') {
-            const withdraw = await contract.methods.withdrawRequest().call();
             const treasury_transfer = await contract.methods.transferRequest().call();
-            if ((withdraw.isActive || treasury_transfer.isActive) && !flag) flag = 1;
+            if (treasury_transfer.isActive && !flag) flag = 1;
         }
         else if (activeTab === 'claim') {
             const claim_rootRequest = await contract.methods.claimRootRequest().call();
