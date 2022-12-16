@@ -124,3 +124,7 @@ fieldset[disabled] label.form-control {
 .max-w-600px {
     max-width: 600px;
 }
+
+.bg-grey {
+    background-color: #e9ecef;
+}

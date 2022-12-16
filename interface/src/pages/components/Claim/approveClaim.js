@@ -72,7 +72,7 @@ const ApproveClaimList = () => {
         <>
             <div className="container">
                 <SectionTitle title="Active Claim List Root"/>
-                <span className="btn border">{activeClaimRoot}</span>
+                <span className="btn border bg-grey">{activeClaimRoot}</span>
             </div>
 
             <div className="container">

@@ -101,7 +101,7 @@ const UploadClaim = () => {
                 <div className='row'>
                     <div className="controls-section col">
                         <div className="upload-file-button">
-                            <div className="file-indicator">
+                            <div className="file-indicator font-weight-bold">
                                 {fileName ? fileName : "Chose file to upload"}
                             </div>
                             <label htmlFor="file-upload-new" className={`custom-file-upload btn  btn-success ${!isConnected && "disabled"}`}>

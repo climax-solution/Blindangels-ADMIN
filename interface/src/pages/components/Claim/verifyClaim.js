@@ -99,8 +99,8 @@ const VerifyClaim = () => {
                 <div className='row'>
                     <div className="controls-section col-md-5">
                         <div className="upload-file-button">
-                            <div className="file-indicator">
-                            {fileName ? fileName : "Chose file to upload"}
+                            <div className="file-indicator font-weight-bold">
+                                {fileName ? fileName : "Chose file to upload"}
                             </div>
                             <label htmlFor="file-upload-verify" className={`custom-file-upload btn  btn-success ${!isConnected && "disabled"}`}>
                                 Browse
