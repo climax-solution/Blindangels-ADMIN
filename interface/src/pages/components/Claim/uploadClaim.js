@@ -45,7 +45,7 @@ const UploadClaim = () => {
         }
 
         if (!reflectionList.length) {
-            NotificationManager.warning("No air drop list", "Warning");
+            NotificationManager.warning("No claim list", "Warning");
             return;
         }
 
@@ -90,6 +90,9 @@ const UploadClaim = () => {
         setIsLoading(false);
     }
 
+    const clear = () => {
+        setReflectionList([]);
+    }
     return (
         <>
             <div className="container">
@@ -108,6 +111,9 @@ const UploadClaim = () => {
                                 isConnected ? <input id="file-upload-new" type="file" accept='.csv' onChange={importList} /> : ""
                             }
                         </div>
+                        <label className={`btn btn-warning ${!isConnected && "disabled"}`} onClick={clear}>
+                            Clear
+                        </label>
                     </div>
                     <div className='week-section col'>
                         <div className="input-group mb-3">

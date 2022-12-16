@@ -86,12 +86,18 @@ const VerifyClaim = () => {
         setGeneratedClaimRoot(merkleTree.getHexRoot());
     }
 
+    const clear = () => {
+        setGeneratedClaimRoot('');
+        setRequestedList([]);
+        setFileName('');
+    }
+
     return (
         <>
             <div className="container">
                 <SectionTitle title="Verify Claim List Upload Request"/>
                 <div className='row'>
-                    <div className="controls-section col-md-4">
+                    <div className="controls-section col-md-5">
                         <div className="upload-file-button">
                             <div className="file-indicator">
                             {fileName ? fileName : "Chose file to upload"}
@@ -104,6 +110,9 @@ const VerifyClaim = () => {
                                 isConnected ? <input id="file-upload-verify" type="file" accept='.csv' onChange={importReflectionList} /> : ""
                             }
                         </div>
+                        <label className={`btn btn-warning ${!isConnected && "disabled"}`} onClick={clear}>
+                            Clear
+                        </label>
                     </div>
                     <div className='week-section col-md-4 d-flex'>
                         <div className="input-group mr-2">
@@ -117,7 +126,7 @@ const VerifyClaim = () => {
                             />
                         </div>
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <button id="uploadBtn" className={`btn btn-success ${(!isConnected || !requestedList.length) && "disabled"}`} onClick={(isConnected && requestedList.length) ? compareAndGenerate : null}>Compare & Generate</button>
                     </div>
                 </div>
