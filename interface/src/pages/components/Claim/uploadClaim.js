@@ -14,7 +14,7 @@ const UploadClaim = () => {
     const [reflectionList, setReflectionList] = useState([]);
     const [week, setWeek] = useState('');
 
-    const importReflectionList = (e) => {
+    const importList = (e) => {
         if (!isConnected) {
             NotificationManager.warning("Metamask is not connected!", "Warning");
             return;
@@ -33,7 +33,7 @@ const UploadClaim = () => {
             console.log(err);
         }
 
-        e.target.value = null;
+        // e.target.value = null;
     }
     
     const updateClaimList = async() => {
@@ -98,12 +98,12 @@ const UploadClaim = () => {
                             <div className="file-indicator">
                                 Chose file to upload
                             </div>
-                            <label htmlFor="file-upload" className={`custom-file-upload btn  btn-success ${!isConnected && "disabled"}`}>
+                            <label htmlFor="file-upload-new" className={`custom-file-upload btn  btn-success ${!isConnected && "disabled"}`}>
                                 Browse
                             </label>
                             {
                             
-                                isConnected ? <input id="file-upload" type="file" accept='.csv' onChange={importReflectionList} /> : ""
+                                isConnected ? <input id="file-upload-new" type="file" accept='.csv' onChange={importList} /> : ""
                             }
                         </div>
                     </div>

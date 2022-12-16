@@ -20,7 +20,6 @@ const ReflectionHistory = ({ tx, web3, idx }) => {
                     type: "uint256",
                     name: "amount"
                 }], tx.data);
-                console.log(result);
             }
         }
         run();

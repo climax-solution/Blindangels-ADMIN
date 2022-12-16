@@ -54,7 +54,6 @@ const TransferHistory = ({ address }) => {
             }
         ).then(res => {
             const { data } = res.data;
-            console.log(res.data);
             setLastTransfersTreasury(data.ethereum.smartContractEvents);
         }).catch(err => {
             setLastTransfersTreasury([]);

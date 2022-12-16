@@ -9,7 +9,7 @@ import keccak256 from "keccak256";
 import MerkleTree from "merkletreejs";
 
 const VerifyClaim = () => {
-    const { web3, cContract, isConnected } = useAppContext();
+    const { web3, cContract, isConnected, updated } = useAppContext();
 
     const [requestedList, setRequestedList] = useState([]);
     const [week, setWeek] = useState('');
@@ -21,7 +21,13 @@ const VerifyClaim = () => {
     useEffect(() => {
         /* eslint-disable */
         if (cContract) getClaimListRequest();
-    }, [cContract])
+    }, [cContract, updated])
+
+    useEffect(() => {
+        if (csvData.length) {
+            csvLink.current.link.click();
+        }
+    }, [csvData])
 
     const importReflectionList = (e) => {
         if (!isConnected) {
@@ -58,7 +64,6 @@ const VerifyClaim = () => {
             return item;
         });
         setCsvData(_csvData);
-        csvLink.current.link.click();
     }
 
     const getClaimListRequest = async() => {
@@ -84,12 +89,12 @@ const VerifyClaim = () => {
                             <div className="file-indicator">
                                 Chose file to upload
                             </div>
-                            <label htmlFor="file-upload" className={`custom-file-upload btn  btn-success ${!isConnected && "disabled"}`}>
+                            <label htmlFor="file-upload-verify" className={`custom-file-upload btn  btn-success ${!isConnected && "disabled"}`}>
                                 Browse
                             </label>
                             {
                             
-                                isConnected ? <input id="file-upload" type="file" accept='.csv' onChange={importReflectionList} /> : ""
+                                isConnected ? <input id="file-upload-verify" type="file" accept='.csv' onChange={importReflectionList} /> : ""
                             }
                         </div>
                     </div>
