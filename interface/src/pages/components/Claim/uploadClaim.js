@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { MerkleTree } from "merkletreejs";
 import { utils } from "ethers";
 import keccak256 from "keccak256";
@@ -13,11 +13,6 @@ const UploadClaim = () => {
 
     const [reflectionList, setReflectionList] = useState([]);
     const [week, setWeek] = useState('');
-    const [claimHash, setClaimHash] = useState('');
-
-    useEffect(() => {
-        if (cContract) getClaimMerkleTree(); // eslint-disable-next-line
-    }, [cContract, updated])
 
     const importReflectionList = (e) => {
         if (!isConnected) {
@@ -93,18 +88,10 @@ const UploadClaim = () => {
         setIsLoading(false);
     }
 
-    const getClaimMerkleTree = async() => {
-        const hash = await cContract.methods.claimMerkleRoot().call();
-        setClaimHash(hash);
-    }
     return (
         <>
             <div className="container">
-                <SectionTitle title="Active Claim MerkleTree Root"/>
-                <span className="btn border">{claimHash}</span>
-            </div>
-            <div className="container">
-                <SectionTitle title="Upload Reflections Claim List"/>
+                <SectionTitle title="Upload Blessings Claim List"/>
                 <div className='row'>
                     <div className="controls-section col">
                         <div className="upload-file-button">
@@ -119,12 +106,8 @@ const UploadClaim = () => {
                                 isConnected ? <input id="file-upload" type="file" accept='.csv' onChange={importReflectionList} /> : ""
                             }
                         </div>
-
-                        <button id="uploadBtn" className={`btn btn-success ${!isConnected && "disabled"}`} onClick={isConnected ? updateClaimList : null}>Upload</button>
-
-                        <div className="filler"></div>
                     </div>
-                    <div className='week-secion col'>
+                    <div className='week-section col'>
                         <div className="input-group mb-3">
                             <input
                                 type="number"
@@ -166,6 +149,10 @@ const UploadClaim = () => {
                             }
                         </tbody>
                     </table>
+                </div>
+
+                <div className="my-5">
+                    <button id="uploadBtn" className={`btn btn-success ${!isConnected && "disabled"}`} onClick={isConnected ? updateClaimList : null}>Create New Claim List Request</button>
                 </div>
             </div>
         </>

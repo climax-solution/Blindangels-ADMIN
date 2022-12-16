@@ -116,3 +116,11 @@ fieldset[disabled] label.form-control {
 .list-group-item {
     font-size: 14px;
 }
+
+.max-w-100px {
+    max-width: 100px;
+}
+
+.max-w-600px {
+    max-width: 600px;
+}

@@ -15,6 +15,7 @@ import { Nav, Tab } from 'react-bootstrap';
 import Deposit from './components/Deposit/deposit.js';
 import ManageSigner from './components/ManageSigner/manageSigner.js';
 import Web3 from 'web3';
+import VerifyClaim from './components/Claim/verifyClaim.js';
 
 const { inboundTreasuryAddress, outboundTreasuryAddress, claimAddress } = config;
 const Lawis = () => {
@@ -53,7 +54,6 @@ const Lawis = () => {
     useEffect(() => {
         if (tInContract && tOutContract && cContract) {
             /* eslint-disable */
-            console.log('updatedupdated', updated);
             checkOutStanding();
         }
 
@@ -119,7 +119,6 @@ const Lawis = () => {
         const totalClaimAmount = await cContract.methods.totalClaimAmount().call();
         const claimedAmount = await cContract.methods.totalClaimedAmount().call();
         const rest = totalClaimAmount - claimedAmount;
-        console.log(rest);
         setUnClaimedBalance(web3.utils.fromWei(rest.toString(), 'ether'));
     }
 
@@ -319,13 +318,11 @@ const Lawis = () => {
 
                             <Week/>
 
-                            <UploadClaim
-                                web3={web3}
-                            />
+                            <ApproveClaimList/>
 
-                            <ApproveClaimList
-                                cContract={cContract}
-                            />
+                            <VerifyClaim/>
+
+                            <UploadClaim/>
                             
                             <ClaimHistory address={claimAddress}/>
 
