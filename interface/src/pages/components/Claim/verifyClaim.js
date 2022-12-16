@@ -15,6 +15,7 @@ const VerifyClaim = () => {
     const [week, setWeek] = useState('');
     const [pendingClaimRoot, setPendingClaimRoot] = useState('');
     const [generatedClaimRoot, setGeneratedClaimRoot] = useState('');
+    const [fileName, setFileName] = useState('');
     const [csvData, setCsvData] = useState('');
     const csvLink = useRef() // setup the ref that we'll use for the hidden CsvLink click once we've updated the data
 
@@ -43,6 +44,7 @@ const VerifyClaim = () => {
                 complete: function (results) {
                     setRequestedList(results.data);
                     setGeneratedClaimRoot('');
+                    setFileName(file.name);
                 },
             });
         } catch(err) {
@@ -92,7 +94,7 @@ const VerifyClaim = () => {
                     <div className="controls-section col-md-4">
                         <div className="upload-file-button">
                             <div className="file-indicator">
-                                Chose file to upload
+                            {fileName ? fileName : "Chose file to upload"}
                             </div>
                             <label htmlFor="file-upload-verify" className={`custom-file-upload btn  btn-success ${!isConnected && "disabled"}`}>
                                 Browse

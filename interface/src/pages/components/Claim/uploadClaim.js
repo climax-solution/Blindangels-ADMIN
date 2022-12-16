@@ -13,6 +13,7 @@ const UploadClaim = () => {
 
     const [reflectionList, setReflectionList] = useState([]);
     const [week, setWeek] = useState('');
+    const [fileName, setFileName] = useState('');
 
     const importList = (e) => {
         if (!isConnected) {
@@ -27,6 +28,7 @@ const UploadClaim = () => {
                 skipEmptyLines: true,
                 complete: function (results) {
                     setReflectionList(results.data);
+                    setFileName(file.name);
                 },
             });
         } catch(err) {
@@ -96,7 +98,7 @@ const UploadClaim = () => {
                     <div className="controls-section col">
                         <div className="upload-file-button">
                             <div className="file-indicator">
-                                Chose file to upload
+                                {fileName ? fileName : "Chose file to upload"}
                             </div>
                             <label htmlFor="file-upload-new" className={`custom-file-upload btn  btn-success ${!isConnected && "disabled"}`}>
                                 Browse
