@@ -92,6 +92,7 @@ const UploadClaim = () => {
 
     const clear = () => {
         setReflectionList([]);
+        setFileName('');
     }
     return (
         <>
