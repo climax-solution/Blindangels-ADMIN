@@ -131,47 +131,53 @@ const VerifyClaim = () => {
                     </div>
                 </div>
                 
-                <div>
-                    <fieldset id="createSignerFieldset">
-                        <label htmlFor="pending-claim-request">Pending Claim Request</label>
-                        <div className="input-group mb-3">
-                            <input
-                                type="text"
-                                className="form-control max-w-600px"
-                                aria-label="Pending Claim Request"
-                                id="pending-claim-request"
-                                value={pendingClaimRoot}
-                                readOnly
-                            />
+                <div className="row">
+                    <div className="col-md-7">
+                        <div className="card">
+                            <div className="card-body">
+                                <fieldset id="createSignerFieldset">
+                                    <label htmlFor="pending-claim-request">Pending Claim Request</label>
+                                    <div className="input-group mb-3">
+                                        <input
+                                            type="text"
+                                            className="form-control max-w-600px"
+                                            aria-label="Pending Claim Request"
+                                            id="pending-claim-request"
+                                            value={pendingClaimRoot}
+                                            readOnly
+                                        />
+                                    </div>
+                                    <label htmlFor="createClaimAddress">Generated Claim Request</label>
+                                    <div className="input-group mb-3">
+                                        <input
+                                            type="text"
+                                            className="form-control max-w-600px"
+                                            aria-label="Address"
+                                            id="createClaimAddress"
+                                            value={generatedClaimRoot}
+                                            readOnly
+                                        />
+                                    </div>
+                                    <label htmlFor="pending-claim-request">Are lists the same?</label>
+                                    <div className="input-group mb-3">
+                                        <input
+                                            type="text"
+                                            className="form-control max-w-100px"
+                                            aria-label="Pending Claim Request"
+                                            id="pending-claim-request"
+                                            value={pendingClaimRoot && generatedClaimRoot ? ( pendingClaimRoot === generatedClaimRoot ? "Yes" : "No" ) : ""}
+                                            readOnly
+                                        />
+                                    </div>
+                                </fieldset>
+                            </div>
                         </div>
-                        <label htmlFor="createClaimAddress">Generated Claim Request</label>
-                        <div className="input-group mb-3">
-                            <input
-                                type="text"
-                                className="form-control max-w-600px"
-                                aria-label="Address"
-                                id="createClaimAddress"
-                                value={generatedClaimRoot}
-                                readOnly
-                            />
-                        </div>
-                        <label htmlFor="pending-claim-request">Are lists the same?</label>
-                        <div className="input-group mb-3">
-                            <input
-                                type="text"
-                                className="form-control max-w-100px"
-                                aria-label="Pending Claim Request"
-                                id="pending-claim-request"
-                                value={pendingClaimRoot && generatedClaimRoot ? ( pendingClaimRoot === generatedClaimRoot ? "Yes" : "No" ) : ""}
-                                readOnly
-                            />
-                        </div>
-                    </fieldset>
+                    </div>
                 </div>
 
                 <div className="row">
                     <div className="d-flex gap-2">
-                        <div className="ml-3">
+                        <div className="ml-3 mt-3">
                             <button
                                 className={`btn btn-success ${(!isConnected || !requestedList.length) && "disabled"}`}
                                 onClick={(isConnected && requestedList.length) ? downloadProofs : null}
