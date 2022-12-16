@@ -42,6 +42,7 @@ const VerifyClaim = () => {
                 skipEmptyLines: true,
                 complete: function (results) {
                     setRequestedList(results.data);
+                    setGeneratedClaimRoot('');
                 },
             });
         } catch(err) {
@@ -70,7 +71,11 @@ const VerifyClaim = () => {
         const request = await cContract.methods.claimRootRequest().call();
         if (request.isActive) {
             setPendingClaimRoot(request.root);
+        }        
+        else {
+            setPendingClaimRoot('');
         }
+        setGeneratedClaimRoot('');
     }
 
     const compareAndGenerate = () => {

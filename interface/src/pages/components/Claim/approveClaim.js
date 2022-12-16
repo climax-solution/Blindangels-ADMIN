@@ -6,8 +6,8 @@ import SectionTitle from "../sectionTitle";
 const ApproveClaimList = () => {
     const { cContract, setIsLoading, ownerAddress, isConnected, updated, setUpdated } = useAppContext();
 
-    const [pendingClaimHash, setPendingClaimHash] = useState('');
-    const [activeClaimHash, setActiveClaimHash] = useState('');
+    const [pendingClaimRoot, setPendingClaimRoot] = useState('');
+    const [activeClaimRoot, setActiveClaimRoot] = useState('');
     const [createdBy, setCreatedBy] = useState('');
 
     useEffect(() => {
@@ -38,7 +38,6 @@ const ApproveClaimList = () => {
         try {
             await cContract.methods.declineClaimListRequest().send({ from: ownerAddress });
             NotificationManager.info('Cleared reflections successfully!', 'Success');
-            window.localStorage.removeItem('claim-list');
         } catch {
             NotificationManager.error('Clearing reflections successfully!', 'Failure');
         }
@@ -56,21 +55,25 @@ const ApproveClaimList = () => {
     const getClaimListRequest = async() => {
         const request = await cContract.methods.claimRootRequest().call();
         if (request.isActive) {
-            setPendingClaimHash(request.root);
+            setPendingClaimRoot(request.root);
             setCreatedBy(request.createdBy);
+        }
+        else {
+            setPendingClaimRoot('');
+            setCreatedBy('');
         }
     }
 
     const getClaimActiveMerkleTree = async() => {
         const hash = await cContract.methods.claimMerkleRoot().call();
-        setActiveClaimHash(hash);
+        setActiveClaimRoot(hash);
     }
 
     return (
         <>
             <div className="container">
                 <SectionTitle title="Active Claim List Root"/>
-                <span className="btn border">{activeClaimHash}</span>
+                <span className="btn border">{activeClaimRoot}</span>
             </div>
 
             <div className="container">
@@ -87,7 +90,7 @@ const ApproveClaimList = () => {
                                             className="form-control"
                                             aria-label="Address"
                                             id="pending-claim-request"
-                                            value={pendingClaimHash}
+                                            value={pendingClaimRoot}
                                             readOnly
                                         />
                                     </div>
