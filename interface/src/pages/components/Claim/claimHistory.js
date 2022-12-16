@@ -60,13 +60,12 @@ const ClaimHistory = ({ address }) => {
 
     return (
         <div className="container mb-5 mt-10">
-            <SectionTitle title="View Last Reflections Claimed"/>
+            <SectionTitle title="View Last Blessings Claimed"/>
             <div className="table-panel w-100 overflow-auto" style={{ overflow: 'auto'}}>
                 <table id="upload-table" className="table">
                     <thead className='thead-dark'>
                         <tr>
                             <th>#</th>
-                            {/* <th>From</th> */}
                             <th>Tx ID</th>
                             <th>Wallet Address</th>
                             <th>Value</th>
